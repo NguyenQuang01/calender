@@ -9,6 +9,7 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
+    "@nuxtjs-extra/ant-design-vue": "^1.0.2",
     "core-js": "^3.25.3",
     "nuxt": "^2.15.8",
     "vue": "^2.7.10",
@@ -17,6 +18,7 @@
     "vuetify": "^2.6.10"
   },
   "devDependencies": {
-    "@nuxtjs/vuetify": "^1.12.3"
+    "@nuxtjs/vuetify": "^1.12.3",
+    "nuxt-icon": "^0.4.0"
   }
 }

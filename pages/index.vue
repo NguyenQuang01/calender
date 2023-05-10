@@ -1,72 +1,107 @@
 <template>
-  <div>
-    <v-sheet tile height="54" class="d-flex">
-      <v-btn icon class="ma-2" @click="$refs.calendar.prev()">
-        <v-icon>mdi-chevron-left</v-icon>
-      </v-btn>
-      <v-select
-        v-model="type"
-        :items="types"
-        dense
-        variant="outlined"
-        hide-details
-        class="ma-2"
-        label="type"
-      ></v-select>
-      <v-select
-        v-model="mode"
-        :items="modes"
-        dense
-        variant="outlined"
-        hide-details
-        label="event-overlap-mode"
-        class="ma-2"
-      ></v-select>
-      <v-select
-        v-model="weekday"
-        :items="weekdays"
-        dense
-        variant="outlined"
-        hide-details
-        label="weekdays"
-        class="ma-2"
-      ></v-select>
-      <v-spacer></v-spacer>
-      <v-btn icon class="ma-2" @click="$refs.calendar.next()">
-        <v-icon>mdi-chevron-right</v-icon>
-      </v-btn>
-    </v-sheet>
-    <v-sheet height="600">
-      <v-calendar
-        ref="calendar"
-        v-model="value"
-        :weekdays="weekday"
-        :type="type"
-        :events="events"
-        :event-overlap-mode="mode"
-        :event-overlap-threshold="30"
-        :event-color="getEventColor"
-        @change="getEvents"
-      ></v-calendar>
-    </v-sheet>
-  </div>
+  <v-row class="fill-height">
+    <v-col cols="2">
+      <div class="inf_all">
+        <div class="avatar">
+          <v-avatar color="teal" size="56"></v-avatar>
+        </div>
+        <div class="Name">Nguyễn Trung Quang</div>
+        <div class="inf">
+          Lets find a time meet about our upcoming co-promotion
+        </div>
+        <div class="network">
+          <div><v-icon>mdi-account-circle </v-icon> derrick Reimer</div>
+          <div><v-icon>mdi-clock-time-four-outline </v-icon> 60 Minutes</div>
+          <div><v-icon>mdi-map-marker </v-icon> Zoom</div>
+        </div>
+      </div>
+    </v-col>
+    <v-col cols="10">
+      <v-sheet height="64">
+        <v-toolbar flat>
+          <v-btn
+            variant="outlined"
+            class="me-4"
+            color="grey-darken-2"
+            @click="setToday"
+          >
+            Today
+          </v-btn>
+          <v-btn
+            fab
+            variant="text"
+            size="small"
+            color="grey-darken-2"
+            @click="prev"
+          >
+            <v-icon size="small"> mdi-chevron-left </v-icon>
+          </v-btn>
+          <v-btn
+            fab
+            variant="text"
+            size="small"
+            color="grey-darken-2"
+            @click="next"
+          >
+            <v-icon size="small"> mdi-chevron-right </v-icon>
+          </v-btn>
+          <v-toolbar-title v-if="$refs.calendar">
+            {{ $refs.calendar.title }}
+          </v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-menu location="bottom end">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                variant="outlined"
+                color="grey-darken-2"
+                v-bind="attrs"
+                v-on="on"
+              >
+                <span>{{ typeToLabel[type] }}</span>
+                <v-icon end> mdi-menu-down </v-icon>
+              </v-btn>
+            </template>
+            <v-list>
+              <v-list-item @click="type = 'week'">
+                <v-list-item-title>Week</v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="type = 'month'">
+                <v-list-item-title>Month</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </v-toolbar>
+      </v-sheet>
+      <v-sheet height="600">
+        <v-calendar
+          ref="calendar"
+          v-model="focus"
+          color="primary"
+          :events="events"
+          :event-color="getEventColor"
+          :type="type"
+          @click:event="showEvent"
+          @click:more="viewDay"
+          @click:date="viewDay"
+          @change="updateRange"
+        ></v-calendar>
+      </v-sheet>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
 export default {
   data: () => ({
-    type: "month",
-    types: ["month", "week", "day", "4day"],
-    mode: "stack",
-    modes: ["stack", "column"],
-    weekday: [0, 1, 2, 3, 4, 5, 6],
-    weekdays: [
-      { text: "Sun - Sat", value: [0, 1, 2, 3, 4, 5, 6] },
-      { text: "Mon - Sun", value: [1, 2, 3, 4, 5, 6, 0] },
-      { text: "Mon - Fri", value: [1, 2, 3, 4, 5] },
-      { text: "Mon, Wed, Fri", value: [1, 3, 5] },
-    ],
-    value: "",
+    focus: "",
+    type: "week",
+    typeToLabel: {
+      month: "Month",
+      week: "Week",
+    },
+    selectedEvent: {},
+    selectedElement: null,
+    selectedOpen: false,
     events: [],
     colors: [
       "blue",
@@ -88,35 +123,54 @@ export default {
       "Party",
     ],
   }),
+  mounted() {
+    this.$refs.calendar.checkChange();
+  },
   methods: {
-    getEvents({ start, end }) {
-      const events = [];
-
-      const min = new Date(`${start.date}T00:00:00`);
-      const max = new Date(`${end.date}T23:59:59`);
-      const days = (max.getTime() - min.getTime()) / 86400000;
-      const eventCount = this.rnd(days, days + 20);
-
-      for (let i = 0; i < eventCount; i++) {
-        const allDay = this.rnd(0, 3) === 0;
-        const firstTimestamp = this.rnd(min.getTime(), max.getTime());
-        const first = new Date(firstTimestamp - (firstTimestamp % 900000));
-        const secondTimestamp = this.rnd(2, allDay ? 288 : 8) * 900000;
-        const second = new Date(first.getTime() + secondTimestamp);
-
-        events.push({
-          name: this.names[this.rnd(0, this.names.length - 1)],
-          start: first,
-          end: second,
-          color: this.colors[this.rnd(0, this.colors.length - 1)],
-          timed: !allDay,
-        });
-      }
-
-      this.events = events;
+    viewDay({ date }) {
+      this.focus = date;
+      this.type = "day";
     },
     getEventColor(event) {
       return event.color;
+    },
+    setToday() {
+      this.focus = "";
+    },
+    prev() {
+      this.$refs.calendar.prev();
+    },
+    next() {
+      this.$refs.calendar.next();
+    },
+    showEvent({ nativeEvent, event }) {
+      const open = () => {
+        this.selectedEvent = event;
+        this.selectedElement = nativeEvent.target;
+        requestAnimationFrame(() =>
+          requestAnimationFrame(() => (this.selectedOpen = true))
+        );
+      };
+
+      if (this.selectedOpen) {
+        this.selectedOpen = false;
+        requestAnimationFrame(() => requestAnimationFrame(() => open()));
+      } else {
+        open();
+      }
+
+      nativeEvent.stopPropagation();
+    },
+    updateRange({ start, end }) {
+      this.events = [
+        {
+          name: "Meeting",
+          start: "2023-05-10 04:30",
+          end: "2023-05-10 12:15",
+          color: "deep-purple",
+          timed: true,
+        },
+      ];
     },
     rnd(a, b) {
       return Math.floor((b - a + 1) * Math.random()) + a;
@@ -124,3 +178,16 @@ export default {
   },
 };
 </script>
+<style scoped>
+.inf_all {
+  margin-top: 20px;
+}
+.Name {
+  margin: 5px 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+.network {
+  margin: 10px 0;
+}
+</style>
