@@ -1,6 +1,6 @@
 <template>
   <v-row class="fill-height">
-    <v-col cols="2">
+    <v-col cols="3">
       <div class="inf_all">
         <div class="avatar">
           <v-avatar color="teal" size="56"></v-avatar>
@@ -14,9 +14,12 @@
           <div><v-icon>mdi-clock-time-four-outline </v-icon> 60 Minutes</div>
           <div><v-icon>mdi-map-marker </v-icon> Zoom</div>
         </div>
+        <div class="day">
+          <v-date-picker v-model="picker"></v-date-picker>
+        </div>
       </div>
     </v-col>
-    <v-col cols="10">
+    <v-col cols="9">
       <v-sheet height="64">
         <v-toolbar flat>
           <v-btn
@@ -122,6 +125,9 @@ export default {
       "Conference",
       "Party",
     ],
+    picker: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+      .toISOString()
+      .substr(0, 10),
   }),
   mounted() {
     this.$refs.calendar.checkChange();
@@ -166,8 +172,22 @@ export default {
         {
           name: "Meeting",
           start: "2023-05-10 04:30",
-          end: "2023-05-10 12:15",
+          end: "2023-05-10 6:15",
           color: "deep-purple",
+          timed: true,
+        },
+        {
+          name: "Green",
+          start: "2023-05-10 02:30",
+          end: "2023-05-10 3:15",
+          color: "green",
+          timed: true,
+        },
+        {
+          name: "Green",
+          start: "2023-05-11 01:30",
+          end: "2023-05-11 2:15",
+          color: "cyan ",
           timed: true,
         },
       ];

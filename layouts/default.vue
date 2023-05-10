@@ -1,7 +1,11 @@
 <template>
   <v-app>
     <v-app-bar fixed app>
-      <v-toolbar-title>{{ title }}</v-toolbar-title>
+      <v-toolbar-title><v-icon> mdi-account</v-icon>Personal </v-toolbar-title>
+
+      <v-toolbar-title class="all"
+        ><v-icon>mdi-account-group-outline</v-icon>All
+      </v-toolbar-title>
       <v-spacer />
     </v-app-bar>
     <v-main>
@@ -29,5 +33,8 @@ export default {
 <style scoped>
 .container-full {
   margin-left: 20px;
+}
+.all {
+  margin: 0 5px;
 }
 </style>
