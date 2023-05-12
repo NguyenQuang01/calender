@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar fixed app>
+    <v-app-bar app>
       <v-toolbar-title><v-icon> mdi-account</v-icon>Personal </v-toolbar-title>
 
       <v-toolbar-title class="all"
@@ -14,7 +14,7 @@
       </div>
     </v-main>
 
-    <v-footer :absolute="!fixed" app>
+    <v-footer app>
       <span>&copy; {{ new Date().getFullYear() }}</span>
     </v-footer>
   </v-app>
