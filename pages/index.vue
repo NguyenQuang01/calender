@@ -11,7 +11,7 @@
           <b-form-input
             id="input-1"
             v-model="form.email"
-            type="email"
+            type="text"
             placeholder="Enter email"
             required
           ></b-form-input>
@@ -54,6 +54,7 @@ export default {
     onSubmit(event) {
       event.preventDefault();
       alert(JSON.stringify(this.form));
+      this.$router.push("/home");
     },
     onReset(event) {
       event.preventDefault();
