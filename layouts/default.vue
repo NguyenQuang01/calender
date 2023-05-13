@@ -1,10 +1,18 @@
 <template>
   <v-app>
-    <v-app-bar app>
-      <v-toolbar-title><v-icon> mdi-account</v-icon>Personal </v-toolbar-title>
+    <v-app-bar app class="toolbar">
+      <v-toolbar-title class="toolbar-title">
+        <nuxt-link to="home" class="toolbar-link">
+          <v-icon> mdi-account</v-icon>
+          <span>Personal</span> 
+        </nuxt-link>
+      </v-toolbar-title>
 
-      <v-toolbar-title class="all"
-        ><v-icon>mdi-account-group-outline</v-icon>All
+      <v-toolbar-title class="toolbar-title">
+        <nuxt-link to="all" class="toolbar-link">
+          <v-icon>mdi-account-group-outline</v-icon>
+          <span>All</span>
+        </nuxt-link>
       </v-toolbar-title>
       <v-spacer />
     </v-app-bar>
@@ -30,11 +38,22 @@ export default {
   },
 };
 </script>
-<style scoped>
+<style lang="scss" scoped>
 .container-full {
-  margin-left: 20px;
 }
 .all {
   margin: 0 5px;
+}
+.toolbar {
+  display: flex;
+  align-items: center;
+}
+.toolbar-title {
+  margin-right: 12px;
+  .toolbar-link {
+    text-decoration: none;
+    display: flex;
+    gap: 4px;
+  }
 }
 </style>
