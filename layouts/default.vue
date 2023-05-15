@@ -8,12 +8,12 @@
         </nuxt-link>
       </v-toolbar-title>
 
-      <v-toolbar-title class="toolbar-title">
+      <!-- <v-toolbar-title class="toolbar-title">
         <nuxt-link to="all" class="toolbar-link">
           <v-icon>mdi-account-group-outline</v-icon>
           <span>All</span>
         </nuxt-link>
-      </v-toolbar-title>
+      </v-toolbar-title> -->
       <v-spacer />
       <v-toolbar-title class="toolbar-title">
         <nuxt-link to="work" class="toolbar-link">

@@ -1,12 +1,56 @@
 <template>
   <v-row class="fill-height">
-    <v-col cols="3">
-      <div class="inf_all">
+    <v-col cols="3" class="inf_all">
+      <div>
         <div class="avatar">
           <v-avatar color="teal" size="56"></v-avatar>
         </div>
 
         <div class="Name">Nguyễn Trung Quang</div>
+        <div>
+          <a-button type="primary" @click="showModal"> Create new </a-button>
+
+          <a-modal v-model="visible" title="Create new calendar" @ok="handleOk">
+            <v-form ref="form" v-model="valid" lazy-validation>
+              <v-text-field
+                v-model="name"
+                :counter="10"
+                :rules="nameRules"
+                label="Title"
+                required
+              ></v-text-field>
+
+              <v-text-field
+                v-model="email"
+                :rules="emailRules"
+                label="StartTime"
+                required
+              ></v-text-field>
+              <v-text-field
+                v-model="email"
+                :rules="emailRules"
+                label="EndTime"
+                required
+              ></v-text-field>
+              <!-- <v-select
+                v-model="select"
+                :items="items"
+                :rules="[(v) => !!v || 'Item is required']"
+                label="EndTime"
+                required
+              ></v-select> -->
+
+              <!-- <v-btn
+                :disabled="!valid"
+                color="success"
+                class="mr-4"
+                @click="validate"
+              >
+                Validate
+              </v-btn> -->
+            </v-form>
+          </a-modal>
+        </div>
         <div class="inf">
           Lets find a time meet about our upcoming co-promotion
         </div>
@@ -97,12 +141,23 @@
 <script>
 export default {
   data: () => ({
+    valid: true,
+    ModalText: "Content of the modal",
+    visible: false,
     focus: "",
     type: "week",
     typeToLabel: {
       month: "Month",
       week: "Week",
     },
+    nameRules: [
+      (v) => !!v || "Name is required",
+      (v) => (v && v.length <= 10) || "Name must be less than 10 characters",
+    ],
+    emailRules: [
+      (v) => !!v || "Name is required",
+      (v) => (v && v.length <= 10) || "Name must be less than 10 characters",
+    ],
     selectedEvent: {},
     selectedElement: null,
     selectedOpen: false,
@@ -134,6 +189,25 @@ export default {
     this.$refs.calendar.checkChange();
   },
   methods: {
+    validate() {
+      this.$refs.form.validate();
+    },
+    showModal() {
+      this.visible = true;
+    },
+    handleOk(e) {
+      this.$refs.form.validate();
+
+      // this.ModalText = "The modal will be closed after two seconds";
+      // setTimeout(() => {
+      // this.visible = false;
+      //   this.confirmLoading = false;
+      // }, 2000);
+    },
+    handleCancel(e) {
+      console.log("Clicked cancel button");
+      this.visible = false;
+    },
     viewDay({ date }) {
       this.focus = date;
       this.type = "day";
@@ -191,6 +265,27 @@ export default {
           color: "cyan ",
           timed: true,
         },
+        {
+          name: "Meeting",
+          start: "2023-05-15 04:30",
+          end: "2023-05-15 6:15",
+          color: "deep-purple",
+          timed: true,
+        },
+        {
+          name: "Green",
+          start: "2023-05-16 02:30",
+          end: "2023-05-16 3:15",
+          color: "green",
+          timed: true,
+        },
+        {
+          name: "Green",
+          start: "2023-05-17 01:30",
+          end: "2023-05-17 2:15",
+          color: "cyan ",
+          timed: true,
+        },
       ];
     },
     rnd(a, b) {
@@ -200,6 +295,9 @@ export default {
 };
 </script>
 <style scoped>
+.mr-20 {
+  margin-right: 10px;
+}
 .inf_all {
   margin-top: 20px;
 }
@@ -210,5 +308,15 @@ export default {
 }
 .network {
   margin: 10px 0;
+}
+.fill-height {
+  margin-top: 20px;
+  margin-left: 20px;
+}
+.v-sheet {
+  margin-bottom: 5px;
+}
+.v-toolbar__title {
+  margin-left: 10px;
 }
 </style>
