@@ -4,7 +4,7 @@
       <v-toolbar-title class="toolbar-title">
         <nuxt-link to="home" class="toolbar-link">
           <v-icon> mdi-account</v-icon>
-          <span>Personal</span> 
+          <span>Personal</span>
         </nuxt-link>
       </v-toolbar-title>
 
@@ -40,6 +40,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .container-full {
+  margin-left: 20px;
 }
 .all {
   margin: 0 5px;

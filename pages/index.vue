@@ -6,7 +6,6 @@
           id="input-group-1"
           label="Email address:"
           label-for="input-1"
-          description="We'll never share your email with anyone else."
         >
           <b-form-input
             id="input-1"
@@ -17,9 +16,10 @@
           ></b-form-input>
         </b-form-group>
 
-        <b-form-group id="input-group-2" label="Your Name:" label-for="input-2">
+        <b-form-group id="input-group-2" label="Password:" label-for="input-2">
           <b-form-input
             id="input-2"
+            type="password"
             v-model="form.name"
             placeholder="Enter name"
             required
@@ -53,7 +53,7 @@ export default {
   methods: {
     onSubmit(event) {
       event.preventDefault();
-      alert(JSON.stringify(this.form));
+      // alert(JSON.stringify(this.form));
       this.$router.push("/home");
     },
     onReset(event) {
