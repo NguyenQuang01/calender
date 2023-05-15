@@ -5,6 +5,7 @@
         <div class="avatar">
           <v-avatar color="teal" size="56"></v-avatar>
         </div>
+
         <div class="Name">Nguyễn Trung Quang</div>
         <div class="inf">
           Lets find a time meet about our upcoming co-promotion
