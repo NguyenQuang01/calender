@@ -73,10 +73,10 @@ export default {
 }
 
 .custom-select .selected {
-  background-color: #0a0a0a;
+  /* background-color: #0a0a0a; */
   border-radius: 6px;
   border: 1px solid #666666;
-  color: #fff;
+  color: black;
   padding-left: 1em;
   cursor: pointer;
   user-select: none;

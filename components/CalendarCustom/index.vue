@@ -41,7 +41,7 @@
           </v-menu>
         </v-toolbar>
       </v-sheet>
-      <v-sheet height="558">
+      <v-sheet class="calendar-main">
         <v-calendar
           ref="calendar"
           v-model="focus"
@@ -189,3 +189,8 @@ export default {
   },
 };
 </script>
+<style>
+  .calendar-main {
+    height: calc(100% - 64px);
+  }
+</style>

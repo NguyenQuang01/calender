@@ -15,6 +15,13 @@
         </nuxt-link>
       </v-toolbar-title>
       <v-spacer />
+      <v-toolbar-title class="toolbar-title">
+        <nuxt-link to="work" class="toolbar-link">
+          <v-icon>mdi-account-group-outline</v-icon>
+          <span>Work List</span>
+        </nuxt-link>
+      </v-toolbar-title>
+      <v-spacer />
     </v-app-bar>
     <v-main>
       <div class="container-full">
@@ -40,7 +47,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 .container-full {
-  margin-left: 20px;
+  height: 100%;
+  width: 100%;
 }
 .all {
   margin: 0 5px;
