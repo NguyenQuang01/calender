@@ -20,7 +20,7 @@
           <b-form-input
             id="input-2"
             type="password"
-            v-model="form.name"
+            v-model="form.password"
             placeholder="Enter name"
             required
           ></b-form-input>
@@ -33,12 +33,14 @@
 </template>
 
 <script>
+import { signInAPI } from "@/api/AuthenConnector.js";
+
 export default {
   data() {
     return {
       form: {
         email: "",
-        name: "",
+        password: "",
       },
       foods: [
         { text: "Select One", value: null },
@@ -51,22 +53,12 @@ export default {
     };
   },
   methods: {
-    onSubmit(event) {
+    async onSubmit(event) {
       event.preventDefault();
+      const res = await signInAPI(this.form);
+      res ? console.log(res) : "";
       // alert(JSON.stringify(this.form));
-      this.$router.push("/home");
-    },
-    onReset(event) {
-      event.preventDefault();
-      // Reset our form values
-      this.form.email = "";
-      this.form.name = "";
-
-      // Trick to reset/clear native browser form validation state
-      this.show = false;
-      this.$nextTick(() => {
-        this.show = true;
-      });
+      // this.$router.push("/home");
     },
   },
 };

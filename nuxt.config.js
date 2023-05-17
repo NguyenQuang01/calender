@@ -32,11 +32,11 @@ export default {
     // https://go.nuxtjs.dev/vuetify
     "@nuxtjs/vuetify",
     // Simple usage
-    '@nuxtjs/moment',
+    "@nuxtjs/moment",
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: ["bootstrap-vue/nuxt"],
+  modules: ["bootstrap-vue/nuxt", "@nuxtjs/axios"],
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
