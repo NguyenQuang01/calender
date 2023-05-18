@@ -136,6 +136,7 @@ export default {
         {
           key: "0",
           name: "Edward King 0",
+          avatar: '',
           monday: [
             {
               id: 1,
@@ -246,7 +247,6 @@ export default {
               shiftName: "afternoon",
             },
           ],
-        
         },
         {
           key: "1",

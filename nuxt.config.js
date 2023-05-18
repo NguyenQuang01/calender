@@ -1,6 +1,10 @@
 import colors from "vuetify/es5/util/colors";
 
 export default {
+  server: {
+    port: 3001, // default: 3000
+    host: '0.0.0.0' // default: localhost
+  },
   // Global page headers: https://go.nuxtjs.dev/config-head
   ssr: false,
   head: {
@@ -36,7 +40,7 @@ export default {
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: ["bootstrap-vue/nuxt", "@nuxtjs/axios"],
+  modules: ["bootstrap-vue/nuxt", "@nuxtjs/axios", '@nuxtjs/auth-next'],
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
@@ -56,6 +60,19 @@ export default {
       },
     },
   },
+
+  axios: {
+    baseURL: 'http://192.168.0.222:8286/',
+    debug: false,
+    proxyHeaders: false,
+    credentials: false,
+  },
+  router: {
+    middleware: ['loggedIn']
+  },
+
+  auth: false,
+
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
