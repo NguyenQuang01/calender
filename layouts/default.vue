@@ -1,8 +1,8 @@
 <template>
   <v-app>
-    <v-app-bar app class="toolbar">
+    <v-app-bar v-if="$auth.loggedIn" app class="toolbar">
       <v-toolbar-title class="toolbar-title">
-        <nuxt-link to="home" class="toolbar-link">
+        <nuxt-link to="/" class="toolbar-link">
           <v-icon> mdi-account</v-icon>
           <span>Personal</span>
         </nuxt-link>
@@ -22,6 +22,7 @@
         </nuxt-link>
       </v-toolbar-title>
       <v-spacer />
+      <button @click="logout">logout</button>
     </v-app-bar>
     <v-main>
       <div class="container-full">
@@ -43,6 +44,16 @@ export default {
       title: "Vuetify.js",
     };
   },
+  methods: {
+    async logout() {
+      try {
+        await this.$auth.logout();
+        this.$router.push('/login');
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }
 };
 </script>
 <style lang="scss" scoped>

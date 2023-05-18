@@ -68,10 +68,27 @@ export default {
     credentials: false,
   },
   router: {
-    middleware: ['loggedIn']
+    middleware: ['auth']
   },
 
-  auth: false,
+  auth: {
+    strategies: {
+      local: {
+        endpoints: {
+          login: { url: '/api/login', method: 'post', propertyName: 'token' },
+          logout: false, // Không sử dụng logout endpoint
+          user: false // Không sử dụng user endpoint
+        },
+        tokenType: 'Bearer'
+      }
+    },
+    redirect: {
+      login: '/login',
+      logout: '/',
+      callback: '/login',
+      home: '/'
+    }
+  },
 
 
   // Build Configuration: https://go.nuxtjs.dev/config-build

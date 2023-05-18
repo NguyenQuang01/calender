@@ -48,21 +48,15 @@ export default {
   methods: {
     async onSubmit(event) {
       event.preventDefault();
-      const res = await LoginService.postLogin('login',this.form);
-      if (res.data.code === 200) {
-        localStorage.setItem('token', res.data.data.token);
-        this.$router.push('/home')
+      try {
+        const res = await LoginService.postLogin('login',this.form);
+        this.$auth.strategy.token.set('local', 'Bearer ' + res.data.data.token)
+        this.$axios.setHeader('Authorization', 'Bearer ' + res.data.data.token)
+        this.$auth.ctx.app.$axios.setHeader('Authorization', 'Bearer ' + res.data.data.token)
+        window.location.reload();
+      } catch (error) {
+        console.error(error)
       }
-      // this.$axios.post('/login', this.form).then((resp) => {
-
-      //     console.log('11111 ~ file: index.vue:58 ~ resp:', resp)
-
-      //     this.$auth.setToken('local', 'Bearer ' + resp.data.data.token)
-      //     // this.$auth.setRefreshToken('local', resp.data.data.refresh_token)
-      //     this.$axios.setHeader('Authorization', 'Bearer ' + resp.data.data.token)
-      //     this.$auth.ctx.app.$axios.setHeader('Authorization', 'Bearer ' + resp.data.data.token)
-          // this.$axios.get('/users/me').then((resp) => { this.$auth.setUser(resp.data); this.$router.push('/') })
-        // })
     },
   },
 };
