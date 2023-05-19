@@ -39,7 +39,7 @@
       </div>
     </v-col>
     <v-col cols="9">
-      <v-sheet height="64">
+      <!-- <v-sheet height="64">
         <v-toolbar flat>
           <v-btn
             variant="outlined"
@@ -107,166 +107,24 @@
           @click:date="viewDay"
           @change="updateRange"
         ></v-calendar>
-      </v-sheet>
+      </v-sheet> -->
+      <CalendarCustom />
     </v-col>
   </v-row>
 </template>
 
 <script>
+import CalendarCustom from '~/components/CalendarCustom'
 export default {
-  data: () => ({
-    valid: true,
-    ModalText: "Content of the modal",
-    visible: false,
-    focus: "",
-    type: "week",
-    typeToLabel: {
-      month: "Month",
-      week: "Week",
-    },
-    nameRules: [
-      (v) => !!v || "Name is required",
-      (v) => (v && v.length <= 10) || "Name must be less than 10 characters",
-    ],
-    emailRules: [
-      (v) => !!v || "Name is required",
-      (v) => (v && v.length <= 10) || "Name must be less than 10 characters",
-    ],
-    selectedEvent: {},
-    selectedElement: null,
-    selectedOpen: false,
-    events: [],
-    colors: [
-      "blue",
-      "indigo",
-      "deep-purple",
-      "cyan",
-      "green",
-      "orange",
-      "grey darken-1",
-    ],
-    names: [
-      "Meeting",
-      "Holiday",
-      "PTO",
-      "Travel",
-      "Event",
-      "Birthday",
-      "Conference",
-      "Party",
-    ],
-    picker: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-      .toISOString()
-      .substr(0, 10),
-    startDate: '',
-    endDate: '',
-  }),
-  mounted() {
-    this.$refs.calendar.checkChange();
+  components: {
+    CalendarCustom,
   },
+
+  data: () => ({
+  }),
+
   methods: {
-    validate() {
-      this.$refs.form.validate();
-    },
-    showModal() {
-      this.visible = true;
-    },
-    handleOk(e) {
-      this.$refs.form.validate();
 
-      // this.ModalText = "The modal will be closed after two seconds";
-      // setTimeout(() => {
-      // this.visible = false;
-      //   this.confirmLoading = false;
-      // }, 2000);
-    },
-    handleCancel(e) {
-      console.log("Clicked cancel button");
-      this.visible = false;
-    },
-    viewDay({ date }) {
-      this.focus = date;
-      this.type = "day";
-    },
-    getEventColor(event) {
-      return event.color;
-    },
-    setToday() {
-      this.focus = "";
-    },
-    prev() {
-      this.$refs.calendar.prev();
-    },
-    next() {
-      this.$refs.calendar.next();
-    },
-    showEvent({ nativeEvent, event }) {
-      const open = () => {
-        this.selectedEvent = event;
-        this.selectedElement = nativeEvent.target;
-        requestAnimationFrame(() =>
-          requestAnimationFrame(() => (this.selectedOpen = true))
-        );
-      };
-
-      if (this.selectedOpen) {
-        this.selectedOpen = false;
-        requestAnimationFrame(() => requestAnimationFrame(() => open()));
-      } else {
-        open();
-      }
-
-      nativeEvent.stopPropagation();
-    },
-    updateRange({ start, end }) {
-      this.events = [
-        {
-          name: "Meeting",
-          start: "2023-05-10 04:30",
-          end: "2023-05-10 6:15",
-          color: "deep-purple",
-          timed: true,
-        },
-        {
-          name: "Green",
-          start: "2023-05-10 02:30",
-          end: "2023-05-10 3:15",
-          color: "green",
-          timed: true,
-        },
-        {
-          name: "Green",
-          start: "2023-05-11 01:30",
-          end: "2023-05-11 2:15",
-          color: "cyan ",
-          timed: true,
-        },
-        {
-          name: "Meeting",
-          start: "2023-05-15 04:30",
-          end: "2023-05-15 6:15",
-          color: "deep-purple",
-          timed: true,
-        },
-        {
-          name: "Green",
-          start: "2023-05-16 02:30",
-          end: "2023-05-16 3:15",
-          color: "green",
-          timed: true,
-        },
-        {
-          name: "Green",
-          start: "2023-05-17 01:30",
-          end: "2023-05-17 2:15",
-          color: "cyan ",
-          timed: true,
-        },
-      ];
-    },
-    rnd(a, b) {
-      return Math.floor((b - a + 1) * Math.random()) + a;
-    },
   },
 };
 </script>

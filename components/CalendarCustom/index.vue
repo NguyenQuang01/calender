@@ -15,30 +15,6 @@
           <v-toolbar-title v-if="$refs.calendar">
             {{ $refs.calendar.title }}
           </v-toolbar-title>
-          <v-spacer></v-spacer>
-          <v-btn class="ma-2" color="success">Duyệt Cho Tất Cả</v-btn>
-          <v-menu bottom right>
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn outlined color="grey darken-2" v-bind="attrs" v-on="on">
-                <span>{{ typeToLabel[type] }}</span>
-                <v-icon right> mdi-menu-down </v-icon>
-              </v-btn>
-            </template>
-            <v-list>
-              <v-list-item @click="type = 'day'">
-                <v-list-item-title>Day</v-list-item-title>
-              </v-list-item>
-              <v-list-item @click="type = 'week'">
-                <v-list-item-title>Week</v-list-item-title>
-              </v-list-item>
-              <v-list-item @click="type = 'month'">
-                <v-list-item-title>Month</v-list-item-title>
-              </v-list-item>
-              <v-list-item @click="type = '4day'">
-                <v-list-item-title>4 days</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
         </v-toolbar>
       </v-sheet>
       <v-sheet class="calendar-main">
@@ -81,8 +57,27 @@
             </v-toolbar>
             <v-card-text>
               <span v-html="selectedEvent.details"></span>
+              <div class="form-events">
+                <div class="select-type">
+                  <div class="left-box">
+                    <input type="text">
+                    <select name="" id=""></select>
+                    <select name="" id=""></select>
+                  </div>
+                  <div class="right-box">
+                    <v-date-picker></v-date-picker>
+                    <div>start time</div>
+                    <div>end time</div>
+                  </div>
+                  <textarea name="" id="" cols="30" rows="10"></textarea>
+                </div>
+              </div>
             </v-card-text>
             <v-card-actions>
+              <v-btn text color="secondary" @click="selectedOpen = false">
+                Save
+              </v-btn>
+              <v-spacer/>
               <v-btn text color="secondary" @click="selectedOpen = false">
                 Cancel
               </v-btn>
@@ -102,9 +97,6 @@ export default {
     type: "month",
     typeToLabel: {
       month: "Month",
-      week: "Week",
-      day: "Day",
-      "4day": "4 Days",
     },
     selectedEvent: {},
     selectedElement: null,
