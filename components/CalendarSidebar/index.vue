@@ -10,18 +10,18 @@
       />
     </div>
     <div class="workday">
-      <span class="workday-title">Ca Làm Việc</span>
+      <span class="workday-title">Works Shift</span>
       <div class="workday-box">
         <div class="status">
-          <span class="workday-name">Ca Sáng</span>
+          <span class="workday-name">Go On Bussiness</span>
           <span class="workday-color morning"></span>
         </div>
         <div class="status">
-          <span class="workday-name">Ca Chiều</span>
+          <span class="workday-name">Work at Home</span>
           <span class="workday-color afternoon"></span>
         </div>
         <div class="status">
-          <span class="workday-name">Ca Tối</span>
+          <span class="workday-name">Leave</span>
           <span class="workday-color evening"></span>
         </div>
         <div class="status">
@@ -102,7 +102,7 @@ export default {
         align-items: center;
 
         .workday-name {
-          font-size: 12px;
+          font-size: 16px;
         }
 
         .workday-color {

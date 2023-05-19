@@ -48,6 +48,7 @@ export default {
     async logout() {
       try {
         await this.$auth.logout();
+        localStorage.removeItem('token');
         this.$router.push('/login');
       } catch (error) {
         console.error(error);

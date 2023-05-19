@@ -45,29 +45,19 @@ export default {
       show: true,
     };
   },
-  created() {
-    const week = this.$moment().year(2023).week(21);
-    console.log("11111 ~ file: index.vue:52 ~ week:", week);
-    const startOfWeek = week.startOf("week").format("YYYY-MM-DD");
-
-    console.log("11111 ~ file: index.vue:466 ~ startOfWeek:", startOfWeek);
-
-    const endOfWeek = week.endOf("week").format("YYYY-MM-DD");
-
-    console.log("11111 ~ file: index.vue:470 ~ endOfWeek:", endOfWeek);
-  },
   methods: {
     async onSubmit(event) {
       event.preventDefault();
       try {
         const res = await LoginService.postLogin("login", this.form);
+        localStorage.setItem('token', res.data.data.token)
         this.$auth.strategy.token.set("local", "Bearer " + res.data.data.token);
         this.$axios.setHeader("Authorization", "Bearer " + res.data.data.token);
         this.$auth.ctx.app.$axios.setHeader(
           "Authorization",
           "Bearer " + res.data.data.token
         );
-        window.location.href("/");
+        window.location.reload();
       } catch (error) {
         console.error(error);
       }

@@ -1,23 +1,17 @@
 <template>
   <div>
     <div class="toolbar">
-      <div class="date-range">
-        <span>{{ $moment(this.startDate).format("DD/MM/YYYY") }}</span>
+      <div v-if="this.datePicker.startDate" class="date-range">
+        <span>{{ this.datePicker.startDate }}</span>
         -
-        <span>{{
-          $moment(this.startDate).add(7, "days").format("DD/MM/YYYY")
-        }}</span>
+        <span>{{ this.datePicker.endDate }}</span>
       </div>
       <v-spacer></v-spacer>
       <v-btn class="ma-2" color="success">Duyệt Cho Tất Cả</v-btn>
-      <a-week-picker
-        :allowClear="true"
-        :defaultValue="startDate"
-        @change="onChange"
-      />
+      <a-week-picker :locale="locale" :allowClear="true" @change="onChange" />
     </div>
     <!-- -------------------table----------------------- -->
-    <a-table bordered :data-source="dataSource" :columns="columns">
+    <a-table bordered :data-source="dataSource" :columns="columns" :pagination="false">
       <div class="tag-box" slot="monday" slot-scope="monday">
         <a-tag
           v-for="tag in monday"
@@ -85,6 +79,8 @@
   </div>
 </template>
 <script>
+import AdminService from "../../services/api/adminService";
+
 const EditableCell = {
   template: `
       <div class="editable-cell">
@@ -132,238 +128,14 @@ export default {
   },
   data() {
     return {
+      locale: {
+        timePickerLocale: {
+          placeholder: "Chọn thời gian",
+        },
+        firstDayOfWeek: 1, // 1 đại diện cho thứ 2
+      },
       dataSource: [
-        {
-          key: "0",
-          name: "Edward King 0",
-          avatar: "",
-          monday: [
-            {
-              id: 1,
-              startTime: "6AM",
-              endTime: "11AM",
-              shiftName: "morning",
-            },
-            {
-              id: 2,
-              startTime: "1PM",
-              endTime: "5PM",
-              shiftName: "afternoon",
-            },
-            {
-              id: 2,
-              startTime: "6PM",
-              endTime: "5PM",
-              shiftName: "allday",
-            },
-            {
-              id: 2,
-              startTime: "7PM",
-              endTime: "9PM",
-              shiftName: "evening",
-            },
-          ],
-          tuesday: [
-            {
-              id: 1,
-              startTime: "6AM",
-              endTime: "11AM",
-              shiftName: "morning",
-            },
-            {
-              id: 2,
-              startTime: "1PM",
-              endTime: "5PM",
-              shiftName: "afternoon",
-            },
-          ],
-          wednesday: [
-            {
-              id: 1,
-              startTime: "6AM",
-              endTime: "11AM",
-              shiftName: "morning",
-            },
-            {
-              id: 2,
-              startTime: "1PM",
-              endTime: "5PM",
-              shiftName: "afternoon",
-            },
-          ],
-          thursday: [
-            {
-              id: 1,
-              startTime: "6AM",
-              endTime: "11AM",
-              shiftName: "morning",
-            },
-            {
-              id: 2,
-              startTime: "1PM",
-              endTime: "5PM",
-              shiftName: "afternoon",
-            },
-          ],
-          friday: [
-            {
-              id: 1,
-              startTime: "6AM",
-              endTime: "11AM",
-              shiftName: "morning",
-            },
-            {
-              id: 2,
-              startTime: "1PM",
-              endTime: "5PM",
-              shiftName: "afternoon",
-            },
-          ],
-          saturday: [
-            {
-              id: 1,
-              startTime: "6AM",
-              endTime: "11AM",
-              shiftName: "morning",
-            },
-            {
-              id: 2,
-              startTime: "1PM",
-              endTime: "5PM",
-              shiftName: "afternoon",
-            },
-          ],
-          sunday: [
-            {
-              id: 1,
-              startTime: "6AM",
-              endTime: "11AM",
-              shiftName: "morning",
-            },
-            {
-              id: 2,
-              startTime: "1PM",
-              endTime: "5PM",
-              shiftName: "afternoon",
-            },
-          ],
-        },
-        {
-          key: "1",
-          name: "Edward King 1",
-          monday: [
-            {
-              id: 1,
-              startTime: "6AM",
-              endTime: "11AM",
-              shiftName: "morning",
-            },
-            {
-              id: 2,
-              startTime: "1PM",
-              endTime: "5PM",
-              shiftName: "afternoon",
-            },
-            {
-              id: 2,
-              startTime: "6PM",
-              endTime: "5PM",
-              shiftName: "allday",
-            },
-            {
-              id: 2,
-              startTime: "7PM",
-              endTime: "9PM",
-              shiftName: "evening",
-            },
-          ],
-          tuesday: [
-            {
-              id: 1,
-              startTime: "6AM",
-              endTime: "11AM",
-              shiftName: "morning",
-            },
-            {
-              id: 2,
-              startTime: "1PM",
-              endTime: "5PM",
-              shiftName: "afternoon",
-            },
-          ],
-          wednesday: [
-            {
-              id: 1,
-              startTime: "6AM",
-              endTime: "11AM",
-              shiftName: "morning",
-            },
-            {
-              id: 2,
-              startTime: "1PM",
-              endTime: "5PM",
-              shiftName: "afternoon",
-            },
-          ],
-          thursday: [
-            {
-              id: 1,
-              startTime: "6AM",
-              endTime: "11AM",
-              shiftName: "morning",
-            },
-            {
-              id: 2,
-              startTime: "1PM",
-              endTime: "5PM",
-              shiftName: "afternoon",
-            },
-          ],
-          friday: [
-            {
-              id: 1,
-              startTime: "6AM",
-              endTime: "11AM",
-              shiftName: "morning",
-            },
-            {
-              id: 2,
-              startTime: "1PM",
-              endTime: "5PM",
-              shiftName: "afternoon",
-            },
-          ],
-          saturday: [
-            {
-              id: 1,
-              startTime: "6AM",
-              endTime: "11AM",
-              shiftName: "morning",
-            },
-            {
-              id: 2,
-              startTime: "1PM",
-              endTime: "5PM",
-              shiftName: "afternoon",
-            },
-          ],
-          sunday: [
-            {
-              id: 1,
-              startTime: "6AM",
-              endTime: "11AM",
-              shiftName: "morning",
-            },
-            {
-              id: 2,
-              startTime: "1PM",
-              endTime: "5PM",
-              shiftName: "afternoon",
-            },
-          ],
-        },
       ],
-      count: 2,
       columns: [
         {
           title: "Nhân Viên",
@@ -422,28 +194,54 @@ export default {
           scopedSlots: { customRender: "sunday" },
         },
       ],
+      datePicker: {
+        startDate: "",
+        endDate: "",
+      },
+      userName: "",
+      page: 1,
+      defaultValue: new Date(),
     };
   },
   watch: {
-    startDate: {
-      handler(value) {
-        console.log("11111 ~ file: index.vue:125 ~ value:", value);
+    datePicker: {
+      handler(){
+        this.getUserSchedule()
       },
       deep: true,
-    },
+    }
+  },
+  mounted() {
+    this.defaultValue = this.getCurrentWeek();
+  },
+  fetch() {
+    Promise.all[this.getUserSchedule()];
   },
   methods: {
+    getCurrentWeek() {
+      const currentDate = new Date();
+      const currentYear = currentDate.getFullYear();
+      const currentWeek = this.getWeekNumber(currentDate);
+      return { week: currentWeek, year: currentYear };
+    },
+    getWeekNumber(date) {
+      const onejan = new Date(date.getFullYear(), 0, 1);
+      const millisecsInDay = 86400000;
+      return Math.ceil(
+        ((date - onejan) / millisecsInDay + onejan.getDay() + 1) / 7
+      );
+    },
     colorTag(tagName) {
-      if (tagName === "morning") {
+      if (tagName === "Work At Company") {
         return "#673ab7";
       }
-      if (tagName === "afternoon") {
+      if (tagName === "Go On Bussiness") {
         return "#ff9800";
       }
-      if (tagName === "evening") {
+      if (tagName === "Work at Home") {
         return "#0b91ff";
       }
-      if (tagName === "allday") {
+      if (tagName === "Leave") {
         return "greenyellow";
       }
     },
@@ -457,12 +255,9 @@ export default {
         const week = this.$moment().year(year).week(weekNumber);
         const startOfWeek = week.startOf("week").format("YYYY-MM-DD");
         const endOfWeek = week.endOf("week").format("YYYY-MM-DD");
-
-        console.log('11111 ~ file: index.vue:466 ~ startOfWeek:', startOfWeek)
-        console.log('11111 ~ file: index.vue:470 ~ endOfWeek:', endOfWeek)
+        this.datePicker.startDate = startOfWeek;
+        this.datePicker.endDate = endOfWeek;
       }
-
-      this.startDate = dateString;
     },
     onCellChange(key, dataIndex, value) {
       const dataSource = [...this.dataSource];
@@ -475,6 +270,19 @@ export default {
     onDelete(key) {
       const dataSource = [...this.dataSource];
       this.dataSource = dataSource.filter((item) => item.key !== key);
+    },
+
+    async getUserSchedule() {
+      let url = `?endDate=${this.datePicker.endDate}&startDate=${this.datePicker.startDate}`;
+      if (this.userName) {
+        url += `&employeeName=${this.userName}`;
+      }
+      try {
+        const res = await AdminService.getUserSchedule(url);
+        this.dataSource = res.data.data.content
+      } catch (error) {
+        console.error(error);
+      }
     },
   },
 };
