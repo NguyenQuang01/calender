@@ -10,7 +10,7 @@
       </div>
       <v-spacer></v-spacer>
       <v-btn class="ma-2" color="success">Duyệt Cho Tất Cả</v-btn>
-      <a-week-picker 
+      <a-week-picker
         :allowClear="true"
         :defaultValue="startDate"
         @change="onChange"
@@ -37,7 +37,7 @@
         </a-tag>
       </div>
       <div class="tag-box" slot="wednesday" slot-scope="wednesday">
-        <a-tag 
+        <a-tag
           v-for="tag in wednesday"
           :key="tag.id"
           :color="colorTag(tag.shiftName)"
@@ -136,7 +136,7 @@ export default {
         {
           key: "0",
           name: "Edward King 0",
-          avatar: '',
+          avatar: "",
           monday: [
             {
               id: 1,
@@ -233,7 +233,7 @@ export default {
               shiftName: "afternoon",
             },
           ],
-          sunday:[
+          sunday: [
             {
               id: 1,
               startTime: "6AM",
@@ -347,7 +347,7 @@ export default {
               shiftName: "afternoon",
             },
           ],
-          sunday:[
+          sunday: [
             {
               id: 1,
               startTime: "6AM",
@@ -361,7 +361,6 @@ export default {
               shiftName: "afternoon",
             },
           ],
-        
         },
       ],
       count: 2,
@@ -434,23 +433,36 @@ export default {
     },
   },
   methods: {
-    colorTag(tagName){
-      if (tagName === 'morning') {
-        return '#673ab7'
+    colorTag(tagName) {
+      if (tagName === "morning") {
+        return "#673ab7";
       }
-      if (tagName === 'afternoon'){
-        return '#ff9800'
+      if (tagName === "afternoon") {
+        return "#ff9800";
       }
       if (tagName === "evening") {
-        return '#0b91ff'
+        return "#0b91ff";
       }
       if (tagName === "allday") {
-        return 'greenyellow'
+        return "greenyellow";
       }
     },
     onChange(date, dateString) {
+      if (dateString) {
+        const weekNumber = parseInt(
+          dateString.split("-")[1].match(/\d+/)[0],
+          10
+        );
+        const year = parseInt(dateString.split("-")[0]);
+        const week = this.$moment().year(year).week(weekNumber);
+        const startOfWeek = week.startOf("week").format("YYYY-MM-DD");
+        const endOfWeek = week.endOf("week").format("YYYY-MM-DD");
+
+        console.log('11111 ~ file: index.vue:466 ~ startOfWeek:', startOfWeek)
+        console.log('11111 ~ file: index.vue:470 ~ endOfWeek:', endOfWeek)
+      }
+
       this.startDate = dateString;
-      console.log("11111 ~ file: index.vue:120 ~ dateString:", dateString);
     },
     onCellChange(key, dataIndex, value) {
       const dataSource = [...this.dataSource];

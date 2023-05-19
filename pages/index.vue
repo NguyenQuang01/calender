@@ -8,7 +8,7 @@
 
         <div class="Name">Nguyễn Trung Quang</div>
         <div>
-          <a-button type="primary" @click="showModal"> Create new </a-button>
+          <a-button type="primary" @click="showModal" style="color: white;"> Create new </a-button>
 
           <a-modal v-model="visible" title="Create new calendar" @ok="handleOk">
             <v-form ref="form" v-model="valid" lazy-validation>
@@ -21,45 +21,19 @@
               ></v-text-field>
 
               <v-text-field
-                v-model="email"
-                :rules="emailRules"
+                v-model="startDate"
                 label="StartTime"
                 required
               ></v-text-field>
               <v-text-field
-                v-model="email"
-                :rules="emailRules"
+                v-model="endDate"
                 label="EndTime"
                 required
               ></v-text-field>
-              <!-- <v-select
-                v-model="select"
-                :items="items"
-                :rules="[(v) => !!v || 'Item is required']"
-                label="EndTime"
-                required
-              ></v-select> -->
-
-              <!-- <v-btn
-                :disabled="!valid"
-                color="success"
-                class="mr-4"
-                @click="validate"
-              >
-                Validate
-              </v-btn> -->
             </v-form>
           </a-modal>
         </div>
-        <div class="inf">
-          Lets find a time meet about our upcoming co-promotion
-        </div>
-        <div class="network">
-          <div><v-icon>mdi-account-circle </v-icon> derrick Reimer</div>
-          <div><v-icon>mdi-clock-time-four-outline </v-icon> 60 Minutes</div>
-          <div><v-icon>mdi-map-marker </v-icon> Zoom</div>
-        </div>
-        <div class="day">
+        <div class="day" style="margin-top: 10px;">
           <v-date-picker v-model="picker"></v-date-picker>
         </div>
       </div>
@@ -184,6 +158,8 @@ export default {
     picker: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
       .toISOString()
       .substr(0, 10),
+    startDate: '',
+    endDate: '',
   }),
   mounted() {
     this.$refs.calendar.checkChange();
