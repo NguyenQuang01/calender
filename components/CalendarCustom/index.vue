@@ -59,25 +59,34 @@
               <span v-html="selectedEvent.details"></span>
               <div class="form-events">
                 <div class="select-type">
-                  <div class="left-box">
-                    <input type="text">
-                    <select name="" id=""></select>
-                    <select name="" id=""></select>
+                  <div class="popup-box">
+                    <input class="popup-input" type="text" placeholder="Enter work title"/>
+                    <CustomSelect :options="shiftOptions"/>
+                    <CustomSelect :options="workType" />
                   </div>
-                  <div class="right-box">
-                    <v-date-picker></v-date-picker>
-                    <div>start time</div>
-                    <div>end time</div>
+                  <div class="popup-box">
+                    <input class="popup-input" type="text" placeholder="Enter Date..." />
+                    <input class="popup-input" type="number" placeholder="Enter Start Time..." />
+                    <input class="popup-input" type="number" placeholder="Enter End Time..." />
                   </div>
-                  <textarea name="" id="" cols="30" rows="10"></textarea>
                 </div>
+                <textarea
+                  style="
+                    margin-top: 12px;
+                    border: 1px solid black;
+                    border-radius: 4px;
+                    width: 100%;
+                  "
+                  id="textarea"
+                  rows="2"
+                ></textarea>
               </div>
             </v-card-text>
             <v-card-actions>
               <v-btn text color="secondary" @click="selectedOpen = false">
                 Save
               </v-btn>
-              <v-spacer/>
+              <v-spacer />
               <v-btn text color="secondary" @click="selectedOpen = false">
                 Cancel
               </v-btn>
@@ -105,15 +114,28 @@ export default {
     colors: ["deep-purple", "green", "orange", "blue"],
     names: ["Ca Sáng", "Ca Tối", "Cả Ngày", "Ca Trưa"],
     weekdays: [1, 2, 3, 4, 5, 6, 0],
-    daysOfWeek : ['Chủ Nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', ]
+    daysOfWeek: [
+      "Chủ Nhật",
+      "Thứ 2",
+      "Thứ 3",
+      "Thứ 4",
+      "Thứ 5",
+      "Thứ 6",
+      "Thứ 7",
+    ],
+    shiftOptions: ['Sang', 'toi'],
+    workType: ['full time ']
   }),
   mounted() {
     this.$refs.calendar.checkChange();
   },
   methods: {
-    getDay(date){
-      const day = new Date(date.date).getDay()
-      return this.daysOfWeek[day]
+    onChange(date, dateString) {
+      console.log(date, dateString);
+    },
+    getDay(date) {
+      const day = new Date(date.date).getDay();
+      return this.daysOfWeek[day];
     },
     viewDay({ date }) {
       this.focus = date;
@@ -182,7 +204,22 @@ export default {
 };
 </script>
 <style>
-  .calendar-main {
-    height: calc(100% - 64px);
-  }
+.calendar-main {
+  height: calc(100% - 64px);
+}
+.select-type {
+  display: flex;
+  gap: 4px
+}
+.popup-box {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.popup-input {
+  border: 1px solid black;
+  border-radius: 4px;
+  width: 100%;
+  padding: 4px 8px;
+}
 </style>

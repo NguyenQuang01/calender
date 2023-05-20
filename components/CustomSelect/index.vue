@@ -68,8 +68,8 @@ export default {
   width: 100%;
   text-align: left;
   outline: none;
-  height: 47px;
-  line-height: 47px;
+  height: 31px;
+  line-height: 30px;
 }
 
 .custom-select .selected {
@@ -90,12 +90,12 @@ export default {
 .custom-select .selected:after {
   position: absolute;
   content: "";
-  top: 22px;
+  top: 14px;
   right: 1em;
   width: 0;
   height: 0;
   border: 5px solid transparent;
-  border-color: #fff transparent transparent transparent;
+  border-color: black transparent transparent transparent;
 }
 
 .custom-select .items {

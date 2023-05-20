@@ -11,7 +11,12 @@
       <a-week-picker :locale="locale" :allowClear="true" @change="onChange" />
     </div>
     <!-- -------------------table----------------------- -->
-    <a-table bordered :data-source="dataSource" :columns="columns" :pagination="false">
+    <a-table
+      bordered
+      :data-source="dataSource"
+      :columns="columns"
+      :pagination="false"
+    >
       <div class="tag-box" slot="monday" slot-scope="monday">
         <a-tag
           v-for="tag in monday"
@@ -81,50 +86,14 @@
 <script>
 import AdminService from "../../services/api/adminService";
 
-const EditableCell = {
-  template: `
-      <div class="editable-cell">
-        <div v-if="editable" class="editable-cell-input-wrapper">
-          <a-input :value="value" @change="handleChange" @pressEnter="check" /><a-icon
-            type="check"
-            class="editable-cell-icon-check"
-            @click="check"
-          />
-        </div>
-        <div v-else class="editable-cell-text-wrapper">
-          {{ value || ' ' }}
-          <a-icon type="edit" class="editable-cell-icon" @click="edit" />
-        </div>
-      </div>
-    `,
-  props: {
-    text: String,
-  },
-  data() {
-    return {
-      value: this.text,
-      editable: false,
-      startDate: "",
-    };
-  },
-  methods: {
-    handleChange(e) {
-      const value = e.target.value;
-      this.value = value;
-    },
-    check() {
-      this.editable = false;
-      this.$emit("change", this.value);
-    },
-    edit() {
-      this.editable = true;
-    },
-  },
-};
 export default {
   name: "TableCustom",
-  components: {
-    EditableCell,
+
+  props: {
+    searchValue: {
+      type: String,
+      default: "",
+    },
   },
   data() {
     return {
@@ -134,64 +103,63 @@ export default {
         },
         firstDayOfWeek: 1, // 1 đại diện cho thứ 2
       },
-      dataSource: [
-      ],
+      dataSource: [],
       columns: [
         {
           title: "Nhân Viên",
           dataIndex: "name",
-          width: "30%",
+          width: "16%",
           slots: { title: "customTitle" },
           scopedSlots: { customRender: "name" },
         },
         {
-          title: "Thứ 2",
+          title: "Sunday",
+          dataIndex: "sunday",
+          key: "sunday",
+          width: "12%",
+          scopedSlots: { customRender: "sunday" },
+        },
+        {
+          title: "Monday",
           dataIndex: "monday",
           key: "monday",
-          width: "10%",
+          width: "12%",
           scopedSlots: { customRender: "monday" },
         },
         {
-          title: "Thứ 3",
+          title: "Tuesday",
           dataIndex: "tuesday",
           key: "tuesday",
-          width: "10%",
+          width: "12%",
           scopedSlots: { customRender: "tuesday" },
         },
         {
-          title: "Thứ 4",
+          title: "Wednesday",
           dataIndex: "wednesday",
           key: "wednesday",
-          width: "10%",
+          width: "12%",
           scopedSlots: { customRender: "wednesday" },
         },
         {
-          title: "Thứ 5",
+          title: "Thursday",
           dataIndex: "thursday",
           key: "thursday",
-          width: "10%",
+          width: "12%",
           scopedSlots: { customRender: "thursday" },
         },
         {
-          title: "Thứ 6",
+          title: "Friday",
           dataIndex: "friday",
           key: "friday",
-          width: "10%",
+          width: "12%",
           scopedSlots: { customRender: "friday" },
         },
         {
-          title: "Thứ 7",
+          title: "Saturday",
           dataIndex: "saturday",
           key: "saturday",
-          width: "10%",
+          width: "12%",
           scopedSlots: { customRender: "saturday" },
-        },
-        {
-          title: "Chủ Nhật",
-          dataIndex: "sunday",
-          key: "sunday",
-          width: "10%",
-          scopedSlots: { customRender: "sunday" },
         },
       ],
       datePicker: {
@@ -205,11 +173,16 @@ export default {
   },
   watch: {
     datePicker: {
-      handler(){
-        this.getUserSchedule()
+      handler() {
+        this.getUserSchedule();
       },
       deep: true,
-    }
+    },
+    searchValue: {
+      handler() {
+        this.getUserSchedule();
+      },
+    },
   },
   mounted() {
     this.defaultValue = this.getCurrentWeek();
@@ -274,12 +247,12 @@ export default {
 
     async getUserSchedule() {
       let url = `?endDate=${this.datePicker.endDate}&startDate=${this.datePicker.startDate}`;
-      if (this.userName) {
-        url += `&employeeName=${this.userName}`;
+      if (this.searchValue) {
+        url += `&employeeName=${this.searchValue}`;
       }
       try {
         const res = await AdminService.getUserSchedule(url);
-        this.dataSource = res.data.data.content
+        this.dataSource = res.data.data.content;
       } catch (error) {
         console.error(error);
       }

@@ -2,7 +2,7 @@ const axios = require('axios');
 
 
 const apiConfig = axios.create({
-  baseURL: "https://7e01-2401-d800-2e10-40ae-8500-f668-b4e4-3f1e.ngrok-free.app/api/1111",
+  baseURL: "https://7e01-2401-d800-2e10-40ae-8500-f668-b4e4-3f1e.ngrok-free.app/api/",
   headers: {
     "Content-Type": "application/json",
     "Access-Control-Allow-Origin": "*",
@@ -23,18 +23,23 @@ apiConfig.interceptors.request.use(
   }
 )
 
-const AdminService = {
-  getUserSchedule(url) {
-    const res = apiConfig.get(url)
+
+const PersonService = {
+  getUser(url){
+    const res =  apiConfig.get(url)
+    return res
+  },
+
+  postCreateUser(url, payload){
+    const res = apiConfig.post(url, payload)
+    return res
+  },
+
+  updateUser(url, payload){
+    const res = apiConfig.post(url, payload)
     return res
   }
 }
 
-const PersonService = {
-  getAllUser(){
-    const res =  apiConfig.get(url)
-  }
-}
 
-
-export default AdminService
+export default PersonService

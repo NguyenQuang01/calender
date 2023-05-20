@@ -1,14 +1,6 @@
 <template>
   <div class="sidebar">
-    <div class="user">
-      <CustomSelect
-        :options="userOptions"
-        :default="userOptions[0]"
-        class="select"
-        :prefixIcon="'mdi-account'"
-        @input="handleSelectUser"
-      />
-    </div>
+    <div class="user"></div>
     <div class="workday">
       <span class="workday-title">Works Shift</span>
       <div class="workday-box">
@@ -32,39 +24,32 @@
     </div>
 
     <div class="search">
-      <v-btn
-        class="search-btn ma-2"
-        color="primary"
-        @click="handleSearch"
-      >
-        Tìm Kiếm
-      </v-btn>
+      <a-input-search
+        placeholder="Search"
+        enter-button="Search"
+        @search="onSearch"
+      />
     </div>
   </div>
 </template>
 
 <script>
-import CustomSelect from "~/components/CustomSelect"
+import CustomSelect from "~/components/CustomSelect";
 export default {
   name: "CalendarSidebar",
   comments: [CustomSelect],
   data: () => ({
     userOptions: ["Nhân Viên A", "Nhân Viên D", "Nhân Viên C", "Nhân Viên D"],
     loading: false,
-    searchData: {},
   }),
   methods: {
-    handleSearch() {
-
-      console.log(111111111, this.searchData);
+    onSearch(value) {
+      this.$emit('searchValue', value);
     },
 
     handleSelectUser(data) {
-
-    this.searchData = {data};
-
-
-    }
+      this.searchData = { data };
+    },
   },
 };
 </script>

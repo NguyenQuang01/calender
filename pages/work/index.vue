@@ -1,30 +1,40 @@
 <template>
   <div class="all-box">
     <div class="sidebar">
-      <CalendarSidebar :search="handleSearch" />
+      <CalendarSidebar @searchValue="onSearch" />
     </div>
     <div class="calendar">
-      <TableCustom/>
+      <TableCustom :searchValue="searchKey" />
     </div>
   </div>
 </template>
 
 <script>
-import TableCustom from '~/components/TableCustom'
-import CalendarSidebar from '~/components/CalendarSidebar'
+import TableCustom from "~/components/TableCustom";
+import CalendarSidebar from "~/components/CalendarSidebar";
 export default {
-  name: 'table',
+  name: "table",
   components: {
     TableCustom,
-    CalendarSidebar
+    CalendarSidebar,
   },
-
+  data() {
+    return {
+      searchKey: "",
+    };
+  },
+  watch: {
+    searchKey: {
+      handler(value) {
+      },
+    },
+  },
   methods: {
-    handleSearch(){
-      console.log();
-    }
-  }
-}
+    onSearch(data) {
+      this.searchKey = data;
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -33,12 +43,11 @@ export default {
   height: 100%;
   display: grid;
   grid-template-columns: 1fr 3fr;
-  .sidebar{
+  .sidebar {
   }
 
   .calendar {
     margin: 4px;
   }
-
 }
 </style>
