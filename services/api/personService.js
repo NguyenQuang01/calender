@@ -37,13 +37,13 @@ const PersonService = {
     return res
   },
 
-  update(url, payload){
-    const res = apiConfig.post(url, payload)
+  delete(url){
+    const res = apiConfig.delete(url)
     return res
   },
 
-  delete(url){
-    const res = apiConfig.delete(url)
+  put(url, payload){
+    const res = apiConfig.put(url, payload)
     return res
   }
 }

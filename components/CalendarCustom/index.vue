@@ -31,13 +31,14 @@
           @click:event="showEvent"
         ></v-calendar>
         <!-- modal events -->
-        <v-menu
+        <!-- <v-menu
           v-model="selectedOpen"
           :close-on-content-click="false"
           :activator="selectedElement"
           offset-x
-        >
-          <v-card color="grey lighten-4" min-width="350px" flat>
+        > -->
+        <a-modal :visible="selectedOpen" :footer="null" :closable="false">
+          <v-card color="grey lighten-4" flat>
             <v-toolbar :color="selectedEvent?.color?.toLowerCase()" dark>
               <v-btn icon>
                 <v-icon>mdi-pencil</v-icon>
@@ -52,62 +53,97 @@
             <v-card-text>
               <span v-html="selectedEvent.details"></span>
               <div class="form-events">
-                <div class="select-type">
-                  <div class="popup-box">
-                    <input
-                      :value="selectedEvent.name"
-                      class="popup-input"
-                      type="text"
-                      placeholder="Enter work title"
+                <a-form :form="form" @submit="handleUpdateEvent">
+                  <a-form-item label="Title">
+                    <a-input
+                      v-decorator="[
+                        'title',
+                        {
+                          rules: [
+                            {
+                              required: true,
+                              message: 'Please input your Title!',
+                            },
+                          ],
+                        },
+                      ]"
                     />
-                    <CustomSelect :options="shiftOptions" />
-                    <CustomSelect :options="workType" />
+                  </a-form-item>
+                  <a-form-item label="Description">
+                    <a-textarea v-decorator="['description']" />
+                  </a-form-item>
+
+                  <div style="display: flex; gap: 4px">
+                    <a-form-item label="Work Date">
+                      <a-input v-decorator="['workDate']" />
+                    </a-form-item>
+                    <a-form-item label="Start Time">
+                      <a-input v-decorator="['startTime']" format="HH:mm" />
+                    </a-form-item>
+                    <a-form-item label="End Time">
+                      <a-input v-decorator="['endTime']" format="HH:mm" />
+                    </a-form-item>
                   </div>
-                  <div class="popup-box">
-                    <input
-                      :value="selectedEvent.start?.split(' ')[0]"
-                      class="popup-input"
-                      type="text"
-                      placeholder="Enter Date..."
-                    />
-                    <input
-                      :value="selectedEvent.start?.split(' ')[1]"
-                      class="popup-input"
-                      type="text"
-                      placeholder="Enter Start Time..."
-                    />
-                    <input
-                      :value="selectedEvent.end?.split(' ')[1]"
-                      class="popup-input"
-                      type="text"
-                      placeholder="Enter End Time..."
-                    />
+                  <div style="display: flex; gap: 4px">
+                    <a-form-item label="Shift" style="width: 100%">
+                      <a-select
+                        v-decorator="[
+                          'shiftId',
+                          {
+                            rules: [
+                              {
+                                required: true,
+                                message: 'Please select shift!',
+                              },
+                            ],
+                          },
+                        ]"
+                      >
+                        <a-select-option
+                          v-for="option in workType"
+                          :key="option.id"
+                          :value="option.id"
+                          >{{ option.name }}</a-select-option
+                        >
+                      </a-select>
+                    </a-form-item>
+                    <a-form-item label="Work Type" style="width: 100%">
+                      <a-select
+                        v-decorator="[
+                          'workTypeId',
+                          {
+                            rules: [
+                              {
+                                required: true,
+                                message: 'Please select work type!',
+                              },
+                            ],
+                          },
+                        ]"
+                      >
+                        <a-select-option
+                          v-for="option in shiftOptions"
+                          :key="option.id"
+                          :value="option.id"
+                          >{{ option.name }}</a-select-option
+                        >
+                      </a-select>
+                    </a-form-item>
                   </div>
-                </div>
-                <textarea
-                  :value="selectedEvent?.description"
-                  style="
-                    margin-top: 12px;
-                    border: 1px solid black;
-                    border-radius: 4px;
-                    width: 100%;
-                  "
-                  id="textarea"
-                  rows="2"
-                ></textarea>
+                  <a-form-item>
+                    <a-button type="primary" html-type="submit">
+                      Save
+                    </a-button>
+                    <v-btn text color="secondary" @click="selectedOpen = false">
+                      Cancel
+                    </v-btn>
+                  </a-form-item>
+                </a-form>
               </div>
             </v-card-text>
-            <v-card-actions>
-              <v-btn text color="secondary" @click="selectedOpen = false">
-                Save
-              </v-btn>
-              <v-spacer />
-              <v-btn text color="secondary" @click="selectedOpen = false">
-                Cancel
-              </v-btn>
-            </v-card-actions>
           </v-card>
-        </v-menu>
+        </a-modal>
+        <!-- </v-menu> -->
       </v-sheet>
     </v-col>
   </v-row>
@@ -144,14 +180,24 @@ export default {
       startDate: null,
       endDate: null,
     },
-    currentMonth: new Date().getMonth()
+    currentMonth: new Date().getMonth(),
   }),
   beforeMount() {
     this.getFirstDateAndLastDate();
+    this.form = this.$form.createForm(this, { name: "register" });
   },
-  // mounted() {
-  //   this.$refs.calendar.checkChange();
-  // },
+  mounted() {
+    this.form.setFieldsValue({
+          description: this.selectedEvent?.description,
+          endTime: this.selectedEvent?.end?.split(" ")[1],
+          scheduleId: this.selectedEvent?.scheduleId,
+          shiftId: this.selectedEvent?.shiftId,
+          startTime: this.selectedEvent?.start?.split(" ")[1],
+          title: this.selectedEvent?.name,
+          workDate: this.selectedEvent?.start?.split(" ")[0],
+          workTypeId: this.selectedEvent?.workTypeId,
+        });
+  },
   fetch() {
     Promise.all([
       this.getListShifts(),
@@ -161,18 +207,45 @@ export default {
   },
   watch: {
     currentMonth: {
-      handler(){
+      handler() {
         this.getFirstDateAndLastDate();
-      }
+      },
     },
     dateRange: {
-      handler(){
+      handler() {
         this.getListEvents();
       },
-      deep: true
-    }
+      deep: true,
+    },
+    selectedEvent: {
+      handler(value) {
+        
+      },
+      deep: true,
+    },
   },
   methods: {
+    async handleUpdateEvent(e) {
+      e.preventDefault();
+      let payload = {};
+
+      this.form.validateFieldsAndScroll((err, values) => {
+        if (!err) {
+          payload = values;
+        }
+      });
+
+      try {
+        const res = await PersonService.put(
+          "user/working-schedule/update",
+          payload
+        );
+
+        console.log("11111 ~ file: index.vue:247 ~ res:", res);
+      } catch (error) {
+        console.log(error);
+      }
+    },
     getFirstDateAndLastDate() {
       const date = new Date();
       const startDate = new Date(date.getFullYear(), this.currentMonth, 1);
@@ -262,7 +335,7 @@ export default {
       };
 
       if (this.selectedOpen) {
-        this.selectedOpen = false;
+        // this.selectedOpen = false;
         requestAnimationFrame(() => requestAnimationFrame(() => open()));
       } else {
         open();
@@ -291,5 +364,8 @@ export default {
   border-radius: 4px;
   width: 100%;
   padding: 4px 8px;
+}
+.ant-modal-body {
+  padding: 0 !important;
 }
 </style>

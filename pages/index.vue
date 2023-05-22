@@ -89,7 +89,7 @@
       </div>
     </v-col>
     <v-col cols="9">
-      <CalendarCustom :createdEvent="createdEvent" />
+      <CalendarCustom />
     </v-col>
   </v-row>
 </template>
