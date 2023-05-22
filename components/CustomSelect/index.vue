@@ -8,15 +8,15 @@
     </div>
     <div class="items" :class="{ selectHide: !open }">
       <div
-        v-for="(option, i) of options"
-        :key="i"
+        v-for="option of options"
+        :key="option.id"
         @click="
-          selected = option;
+          selected = option.name;
           open = false;
           $emit('input', option);
         "
       >
-        {{ option }}
+        {{ option.name }}
       </div>
     </div>
   </div>
@@ -51,7 +51,7 @@ export default {
       selected: this.default
         ? this.default
         : this.options.length > 0
-        ? this.options[0]
+        ? this.options[0].name
         : null,
       open: false,
     };

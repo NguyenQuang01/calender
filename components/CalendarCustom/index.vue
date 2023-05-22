@@ -29,9 +29,6 @@
           :type="type"
           :locale-first-day-of-year="1"
           @click:event="showEvent"
-          @click:more="viewDay"
-          @click:date="viewDay"
-          @change="updateRange"
         ></v-calendar>
         <!-- modal events -->
         <v-menu
@@ -41,18 +38,15 @@
           offset-x
         >
           <v-card color="grey lighten-4" min-width="350px" flat>
-            <v-toolbar :color="selectedEvent.color" dark>
+            <v-toolbar :color="selectedEvent?.color?.toLowerCase()" dark>
               <v-btn icon>
                 <v-icon>mdi-pencil</v-icon>
               </v-btn>
               <!--eslint-disable vue/no-v-text-v-html-on-component-->
               <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
               <v-spacer></v-spacer>
-              <v-btn icon>
-                <v-icon>mdi-heart</v-icon>
-              </v-btn>
-              <v-btn icon>
-                <v-icon>mdi-dots-vertical</v-icon>
+              <v-btn icon @click="handleDeleteEvent">
+                <v-icon>mdi-delete</v-icon>
               </v-btn>
             </v-toolbar>
             <v-card-text>
@@ -60,17 +54,38 @@
               <div class="form-events">
                 <div class="select-type">
                   <div class="popup-box">
-                    <input class="popup-input" type="text" placeholder="Enter work title"/>
-                    <CustomSelect :options="shiftOptions"/>
+                    <input
+                      :value="selectedEvent.name"
+                      class="popup-input"
+                      type="text"
+                      placeholder="Enter work title"
+                    />
+                    <CustomSelect :options="shiftOptions" />
                     <CustomSelect :options="workType" />
                   </div>
                   <div class="popup-box">
-                    <input class="popup-input" type="text" placeholder="Enter Date..." />
-                    <input class="popup-input" type="number" placeholder="Enter Start Time..." />
-                    <input class="popup-input" type="number" placeholder="Enter End Time..." />
+                    <input
+                      :value="selectedEvent.start?.split(' ')[0]"
+                      class="popup-input"
+                      type="text"
+                      placeholder="Enter Date..."
+                    />
+                    <input
+                      :value="selectedEvent.start?.split(' ')[1]"
+                      class="popup-input"
+                      type="text"
+                      placeholder="Enter Start Time..."
+                    />
+                    <input
+                      :value="selectedEvent.end?.split(' ')[1]"
+                      class="popup-input"
+                      type="text"
+                      placeholder="Enter End Time..."
+                    />
                   </div>
                 </div>
                 <textarea
+                  :value="selectedEvent?.description"
                   style="
                     margin-top: 12px;
                     border: 1px solid black;
@@ -99,6 +114,8 @@
 </template>
 
 <script>
+import PersonService from "../../services/api/personService";
+
 export default {
   name: "CalendarCustom",
   data: () => ({
@@ -111,8 +128,6 @@ export default {
     selectedElement: null,
     selectedOpen: false,
     events: [],
-    colors: ["deep-purple", "green", "orange", "blue"],
-    names: ["Ca Sáng", "Ca Tối", "Cả Ngày", "Ca Trưa"],
     weekdays: [1, 2, 3, 4, 5, 6, 0],
     daysOfWeek: [
       "Chủ Nhật",
@@ -123,35 +138,119 @@ export default {
       "Thứ 6",
       "Thứ 7",
     ],
-    shiftOptions: ['Sang', 'toi'],
-    workType: ['full time ']
+    shiftOptions: [],
+    workType: [],
+    dateRange: {
+      startDate: null,
+      endDate: null,
+    },
+    currentMonth: new Date().getMonth()
   }),
-  mounted() {
-    this.$refs.calendar.checkChange();
+  beforeMount() {
+    this.getFirstDateAndLastDate();
+  },
+  // mounted() {
+  //   this.$refs.calendar.checkChange();
+  // },
+  fetch() {
+    Promise.all([
+      this.getListShifts(),
+      this.getWorkTypes(),
+      this.getListEvents(),
+    ]);
+  },
+  watch: {
+    currentMonth: {
+      handler(){
+        this.getFirstDateAndLastDate();
+      }
+    },
+    dateRange: {
+      handler(){
+        this.getListEvents();
+      },
+      deep: true
+    }
   },
   methods: {
+    getFirstDateAndLastDate() {
+      const date = new Date();
+      const startDate = new Date(date.getFullYear(), this.currentMonth, 1);
+      const endDate = new Date(date.getFullYear(), this.currentMonth + 1, 0);
+
+      this.dateRange = {
+        startDate: this.$moment(startDate).format("YYYY-MM-DD"),
+        endDate: this.$moment(endDate).format("YYYY-MM-DD"),
+      };
+    },
+    async handleDeleteEvent() {
+      const res = await PersonService.delete(
+        `user/working-schedule/delete?scheduleId=${this.selectedEvent.scheduleId}`
+      );
+      if (res.data.code === 200) {
+        alert("Delete was successfully!");
+        this.selectedOpen = false;
+        this.getListEvents();
+      } else {
+        alert(`Error ${res.data.message}`);
+      }
+    },
+
+    async getListEvents() {
+      const url = `user/working-schedule/?endDate=${this.dateRange.endDate}&startDate=${this.dateRange.startDate}`;
+      try {
+        const res = await PersonService.get(url);
+        this.events = res.data.data;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async getListShifts() {
+      try {
+        const res = await PersonService.get("user/working-schedule/get-shifts");
+        this.shiftOptions = res.data.data;
+        localStorage.setItem("shiftOptions", JSON.stringify(this.shiftOptions));
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async getWorkTypes() {
+      try {
+        const res = await PersonService.get(
+          "user/working-schedule/get-worktypes"
+        );
+        this.workType = res.data.data;
+        localStorage.setItem("workType", JSON.stringify(this.workType));
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
     onChange(date, dateString) {
-      console.log(date, dateString);
+      console.log(1111111, date, dateString);
     },
     getDay(date) {
       const day = new Date(date.date).getDay();
       return this.daysOfWeek[day];
     },
-    viewDay({ date }) {
-      this.focus = date;
-      this.type = "day";
-    },
+    // viewDay({ date }) {
+    //   this.focus = date;
+    //   this.type = "day";
+    // },
     getEventColor(event) {
-      return event.color;
+      const color = event?.color.toLowerCase();
+      return color;
     },
     setToday() {
       this.focus = "";
     },
     prev() {
       this.$refs.calendar.prev();
+      this.currentMonth--;
     },
     next() {
       this.$refs.calendar.next();
+      this.currentMonth++;
     },
     showEvent({ nativeEvent, event }) {
       const open = () => {
@@ -171,35 +270,6 @@ export default {
 
       nativeEvent.stopPropagation();
     },
-    updateRange({ start, end }) {
-      const events = [];
-
-      const min = new Date(`${start.date}T00:00:00`);
-      const max = new Date(`${end.date}T23:59:59`);
-      const days = (max.getTime() - min.getTime()) / 86400000;
-      const eventCount = this.random(days, days + 20);
-
-      for (let i = 0; i < eventCount; i++) {
-        const allDay = this.random(0, 3) === 0;
-        const firstTimestamp = this.random(min.getTime(), max.getTime());
-        const first = new Date(firstTimestamp - (firstTimestamp % 900000));
-        const secondTimestamp = this.random(2, allDay ? 288 : 8) * 900000;
-        const second = new Date(first.getTime() + secondTimestamp);
-
-        events.push({
-          name: this.names[this.random(0, this.names.length - 1)],
-          start: first,
-          end: second,
-          color: this.colors[this.random(0, this.colors.length - 1)],
-          timed: !allDay,
-        });
-      }
-
-      this.events = events;
-    },
-    random(a, b) {
-      return Math.floor((b - a + 1) * Math.random()) + a;
-    },
   },
 };
 </script>
@@ -209,7 +279,7 @@ export default {
 }
 .select-type {
   display: flex;
-  gap: 4px
+  gap: 4px;
 }
 .popup-box {
   display: flex;

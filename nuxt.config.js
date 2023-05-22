@@ -1,4 +1,5 @@
 import colors from "vuetify/es5/util/colors";
+import { HOST } from "./constants/host/host";
 
 export default {
   server: {
@@ -62,7 +63,7 @@ export default {
   },
 
   axios: {
-    baseURL: 'http://192.168.0.222:8286/',
+    baseURL: HOST,
     debug: false,
     proxyHeaders: false,
     credentials: false,

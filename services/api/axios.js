@@ -1,7 +1,9 @@
+import { HOST } from '../../constants/host/host';
+
 const axios = require('axios');
 
 const apiConfig = axios.create({
-  baseURL: "http://192.168.0.222:8286/api",
+  baseURL: HOST,
   headers: {
     "Content-Type": "application/json",
     "Access-Control-Allow-Origin": "*",

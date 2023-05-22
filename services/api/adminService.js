@@ -1,8 +1,10 @@
+import { HOST } from '../../constants/host/host';
+
 const axios = require('axios');
 
 
 const apiConfig = axios.create({
-  baseURL: "https://7e01-2401-d800-2e10-40ae-8500-f668-b4e4-3f1e.ngrok-free.app/api/1111",
+  baseURL: HOST,
   headers: {
     "Content-Type": "application/json",
     "Access-Control-Allow-Origin": "*",
