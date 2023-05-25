@@ -2,16 +2,12 @@
   <div class="container">
     <div class="form2">
       <b-form @submit="onSubmit" v-if="show" class="form">
-        <b-form-group
-          id="input-group-1"
-          label="Email address:"
-          label-for="input-1"
-        >
+        <b-form-group id="input-group-1" label="Email :" label-for="input-1">
           <b-form-input
             id="input-1"
             v-model="form.email"
             type="text"
-            placeholder="Enter email"
+            placeholder="Enter "
             required
           ></b-form-input>
         </b-form-group>
@@ -21,7 +17,7 @@
             id="input-2"
             type="password"
             v-model="form.password"
-            placeholder="Enter name"
+            placeholder="Enter password"
             required
           ></b-form-input>
         </b-form-group>
@@ -34,6 +30,7 @@
 
 <script>
 import LoginService from "@/services/api/loginService";
+import PersonService from "../../services/api/personService";
 
 export default {
   data() {
@@ -41,6 +38,17 @@ export default {
       form: {
         email: "",
         password: "",
+      },
+      SignUp: {
+        address: "string",
+        birthDay: "1990-02-05",
+        description: "string",
+        email: "abcd@gmail.com",
+        fullName: "Nguyen Văn A",
+        password: "quang",
+        phoneNumber: "0969686868",
+        role: 1,
+        sex: 0,
       },
       show: true,
     };
@@ -50,7 +58,7 @@ export default {
       event.preventDefault();
       try {
         const res = await LoginService.postLogin("login", this.form);
-        localStorage.setItem('token', res.data.data.token)
+        localStorage.setItem("token", res.data.data.token);
         this.$auth.strategy.token.set("local", "Bearer " + res.data.data.token);
         this.$axios.setHeader("Authorization", "Bearer " + res.data.data.token);
         this.$auth.ctx.app.$axios.setHeader(
@@ -70,8 +78,5 @@ export default {
   margin-top: 10%;
   display: flex;
   justify-content: center;
-}
-.form {
-  width: 20%;
 }
 </style>

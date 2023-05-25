@@ -22,6 +22,13 @@
         </nuxt-link>
       </v-toolbar-title>
       <v-spacer />
+      <v-toolbar-title class="toolbar-title">
+        <nuxt-link to="/user" class="toolbar-link">
+          <v-icon>mdi-account-details</v-icon>
+          <span>Account management</span>
+        </nuxt-link>
+      </v-toolbar-title>
+      <v-spacer />
       <button @click="logout">logout</button>
     </v-app-bar>
     <v-main>
@@ -48,13 +55,13 @@ export default {
     async logout() {
       try {
         await this.$auth.logout();
-        localStorage.removeItem('token');
-        this.$router.push('/login');
+        localStorage.removeItem("token");
+        this.$router.push("/login");
       } catch (error) {
         console.error(error);
       }
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>

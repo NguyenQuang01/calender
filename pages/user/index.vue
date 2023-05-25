@@ -1,100 +1,193 @@
 <template>
   <div class="container">
-    <div class="text-center mt-16 text-3xl font-bold title2">
-      Danh Sách Tài Khoản
-    </div>
-    <div class="text-center mt-2 font-semibold mb-10"></div>
-    <div class="max-w-2xl m-auto m-0">
-      <div class="mt-6 table">
-        <table id="customers " class="w-full">
-          <tr class="bg-slate-100">
-            <th class="title">STT</th>
-            <th class="title">TÀI KHOẢN</th>
-            <th class="title">MẬT KHẨU</th>
-            <th class="title">HÀNH ĐỘNG</th>
-          </tr>
-          <tr>
-            <td></td>
-            <td>
-              <b-form-input
-                id="input-1"
-                class="inputLogin"
-                type="text"
-                placeholder="Tìm kiếm"
-                v-model="userName"
-                @input="searchName"
-              ></b-form-input>
-            </td>
-            <td></td>
-            <td></td>
-          </tr>
-          <tr v-for="(item, index) in data" :key="index">
-            <td class="w-5 text-center title">{{ index + 1 }}</td>
-            <td class="w-3/5">
-              <div>{{ item.email }}</div>
-            </td>
-            <td class="w-1/5">
-              <b-form-input
-                v-model="item.password"
-                class="w-full h-8"
-                v-if="isEdit"
-              />
-              <div v-else>*******</div>
-            </td>
-            <td style="text-align: center" class="w-40">
-              <div class="listBtn">
-                <div @click="save(item.id, item.password)">
-                  <a-tooltip placement="topLeft">
-                    <template slot="title">
-                      <span>lưu</span>
-                    </template>
-                    <b-icon
-                      variant="success"
-                      icon="save"
-                      aria-hidden="true"
-                      class="h-4 w-4"
-                    ></b-icon>
-                  </a-tooltip>
-                </div>
-                <div @click="edit" class="mx-2">
-                  <a-tooltip placement="topLeft">
-                    <template slot="title">
-                      <span>sửa</span>
-                    </template>
-                    <b-icon
-                      variant="warning"
-                      icon="pencil-square"
-                      aria-hidden="true"
-                      class="h-4 w-4"
-                    ></b-icon>
-                  </a-tooltip>
-                </div>
-                <a-popconfirm
-                  placement="topRight"
-                  ok-text="Có"
-                  cancel-text="Không"
-                  @confirm="confirm(item.userId)"
-                >
-                  <template slot="title">
-                    <p>{{ textDelete }}</p>
-                  </template>
-                  <!-- <div @click="deletes(item.id)"> -->
-                  <b-icon
-                    variant="danger"
-                    icon="trash"
-                    aria-hidden="true"
-                    class="h-4 w-4"
-                  ></b-icon>
-                  <!-- </div> -->
-                </a-popconfirm>
-              </div>
-            </td>
-          </tr>
-        </table>
+    <a-tabs default-active-key="1">
+      <a-tab-pane key="1" tab="Sign up">
+        <b-form @submit="submitSignUp" class="formSignUp">
+          <b-form-group
+            id="input-group-1"
+            label="FullName :"
+            label-for="input-1"
+          >
+            <b-form-input
+              id="input-1"
+              v-model="SignUp.fullName"
+              type="text"
+              placeholder="Enter "
+              required
+            ></b-form-input>
+          </b-form-group>
 
-        <!-- <BtnBack class="float-right mb-10 mt-3 mr-0" /> -->
-      </div>
-    </div>
+          <b-form-group
+            id="input-group-1"
+            label="BirthDay :"
+            label-for="input-1"
+          >
+            <b-form-input
+              id="input-1"
+              v-model="SignUp.birthDay"
+              type="text"
+              placeholder="Enter "
+              required
+            ></b-form-input>
+          </b-form-group>
+
+          <b-form-group
+            id="input-group-1"
+            label="Address :"
+            label-for="input-1"
+          >
+            <b-form-input
+              id="input-1"
+              v-model="SignUp.address"
+              type="text"
+              placeholder="Enter "
+              required
+            ></b-form-input>
+          </b-form-group>
+
+          <b-form-group
+            id="input-group-1"
+            label="PhoneNumber :"
+            label-for="input-1"
+          >
+            <b-form-input
+              id="input-1"
+              v-model="SignUp.phoneNumber"
+              type="text"
+              placeholder="Enter "
+              required
+            ></b-form-input>
+          </b-form-group>
+
+          <b-form-group id="input-group-1" label="Email :" label-for="input-1">
+            <b-form-input
+              id="input-1"
+              v-model="SignUp.email"
+              type="text"
+              placeholder="Enter "
+              required
+            ></b-form-input>
+          </b-form-group>
+          <b-form-group
+            id="input-group-1"
+            label="Password :"
+            label-for="input-1"
+          >
+            <b-form-input
+              id="input-1"
+              v-model="SignUp.password"
+              type="password"
+              placeholder="Enter "
+              required
+            ></b-form-input>
+          </b-form-group>
+          <b-form-group id="input-group-1" label="Role :" label-for="input-1">
+            <b-form-input
+              id="input-1"
+              v-model="SignUp.role"
+              type="text"
+              placeholder="Enter "
+              required
+            ></b-form-input>
+          </b-form-group>
+          <b-form-group id="input-group-1" label="Sex :" label-for="input-1">
+            <a-select v-model="SignUp.sex">
+              <a-select-option value="0"> Girl </a-select-option>
+              <a-select-option value="1"> Man </a-select-option>
+              <a-select-option value="2">Unknown</a-select-option>
+            </a-select>
+          </b-form-group>
+          <b-form-group
+            id="input-group-1"
+            label="Description :"
+            label-for="input-1"
+          >
+            <b-form-input
+              id="input-1"
+              v-model="SignUp.description"
+              type="text"
+              placeholder="Enter "
+              required
+            ></b-form-input>
+          </b-form-group>
+          <b-button type="submit" class="mt-5">Submit</b-button>
+        </b-form>
+      </a-tab-pane>
+      <a-tab-pane key="2" tab="List Account" force-render>
+        <div class="text-center mt-16 text-3xl font-bold title2">
+          Danh Sách Tài Khoản
+        </div>
+        <div class="text-center mt-2 font-semibold mb-10"></div>
+        <div class="max-w-2xl m-auto m-0">
+          <div class="mt-6 table">
+            <table id="customers " class="w-full">
+              <tr class="bg-slate-100">
+                <th class="title">STT</th>
+                <th class="title">TÀI KHOẢN</th>
+                <th class="title">MẬT KHẨU</th>
+                <th class="title">HÀNH ĐỘNG</th>
+              </tr>
+              <tr>
+                <td></td>
+                <td>
+                  <b-form-input
+                    id="input-1"
+                    class="inputLogin"
+                    type="text"
+                    placeholder="Tìm kiếm"
+                    v-model="userName"
+                    @input="searchName"
+                  ></b-form-input>
+                </td>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr v-for="(item, index) in data" :key="index">
+                <td class="w-5 text-center title">{{ index + 1 }}</td>
+                <td class="w-3/5">
+                  <div>{{ item.email }}</div>
+                </td>
+                <td class="w-1/5">
+                  <b-form-input
+                    v-model="item.password"
+                    class="w-full h-8"
+                    v-if="isEdit"
+                  />
+                  <div v-else>*******</div>
+                </td>
+                <td style="text-align: center" class="w-40">
+                  <div class="listBtn">
+                    <div @click="edit(item.userId)" class="mx-2">
+                      <a-tooltip placement="topLeft">
+                        <template slot="title">
+                          <span>sửa</span>
+                        </template>
+                        <a-icon type="user" />
+                      </a-tooltip>
+                    </div>
+                    <a-popconfirm
+                      placement="topRight"
+                      ok-text="Có"
+                      cancel-text="Không"
+                      @confirm="confirm(item.userId)"
+                    >
+                      <template slot="title">
+                        <p>{{ textDelete }}</p>
+                      </template>
+                      <!-- <div @click="deletes(item.id)"> -->
+                      <a-icon type="delete" />
+                      <!-- </div> -->
+                    </a-popconfirm>
+                  </div>
+                </td>
+              </tr>
+            </table>
+
+            <!-- <BtnBack class="float-right mb-10 mt-3 mr-0" /> -->
+          </div>
+        </div>
+      </a-tab-pane>
+    </a-tabs>
   </div>
 </template>
 
@@ -121,7 +214,17 @@ export default {
         id: "",
       },
       data: [],
-
+      SignUp: {
+        address: "",
+        birthDay: "",
+        description: "",
+        email: "",
+        fullName: "",
+        password: "",
+        phoneNumber: "",
+        role: null,
+        sex: null,
+      },
       search: { employeeName: "", laborCode: "", groupId: "" },
       textDelete: "Bạn có chắc chắn xóa ",
       userName: "",
@@ -131,77 +234,20 @@ export default {
     this.getAllUser();
   },
   methods: {
-    //     async getvalue() {
-    //       //       const res = await getAllAcc(this.page.current, this.page.pageSize, {
-    //       //         userName: this.userName,
-    //       //       });
-    //       //       if (res) {
-    //       //       this.total = res.totalElements;
-    //       this.data = [
-    //         {
-    //           userId: 1,
-    //           userName: "admin",
-    //           password:
-    //             "$2a$12$zJAC8BAzYKMlONLexKgehOpIDvy/90y6w.VZXtnIqGaeAv3Wbqn9C",
-    //           isView: true,
-    //           isEdit: true,
-    //           isReport: true,
-    //           isAdmin: true,
-    //           groupName: null,
-    //         },
-    //         {
-    //           userId: 36,
-    //           userName: "tomay01",
-    //           password:
-    //             "$2a$10$nHCn4gZwWPZHICJB49rWYeirjEkzyn8kNZlWyDtjAJEwAAwVgHF3S",
-    //           isView: false,
-    //           isEdit: true,
-    //           isReport: true,
-    //           isAdmin: false,
-    //           groupName: "Tổ may 01",
-    //         },
-    //         {
-    //           userId: 37,
-    //           userName: "phongtchc",
-    //           password:
-    //             "$2a$10$oqAElowtk1nPHdywXmeQdOYvBc/Ua93ohdehoZlYEV6G8fDB.nHD6",
-    //           isView: false,
-    //           isEdit: true,
-    //           isReport: true,
-    //           isAdmin: false,
-    //           groupName: "Phòng TCHC",
-    //         },
-    //         {
-    //           userId: 38,
-    //           userName: "tocdxn1",
-    //           password:
-    //             "$2a$10$ZlO6iCtI6sOOO9DJ7HjLP.p2O7RWEkTjzCOlVwveXl0Rye7zMgE.m",
-    //           isView: false,
-    //           isEdit: true,
-    //           isReport: true,
-    //           isAdmin: false,
-    //           groupName: "Cơ Điện 1",
-    //         },
-    //         {
-    //           userId: 39,
-    //           userName: "tomay02",
-    //           password:
-    //             "$2a$10$cg8CewiDsQLj.6Nw9m4CB./0gmD2a6F8IUcEHxTE6YICeI19hMFEK",
-    //           isView: false,
-    //           isEdit: true,
-    //           isReport: true,
-    //           isAdmin: false,
-    //           groupName: "Tổ may 02",
-    //         },
-    //       ];
-    //       // this.data = res.content.map((item, index) => ({
-    //       //   SL: index + 1,
-    //       //   name: item.userName || "",
-    //       //   password: item.password || 0,
-    //       //   id: item.userId || "",
-    //       // }));
-    //       //       }
-    //     },
+    async submitSignUp(event) {
+      event.preventDefault();
+      console.log(this.SignUp);
+
+      const url = `admin/user-manager/add`;
+      try {
+        const res = await PersonService.post(url, this.SignUp);
+        if (res) {
+          this.$message.success("success");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
     async getAllUser() {
       const url = `admin/user-manager`;
       try {
@@ -226,15 +272,14 @@ export default {
       this.page.pageSize = pageSize;
       this.getvalue();
     },
-    edit() {
-      this.isEdit = !this.isEdit;
-      this.data.map((item) => (item.password = ""));
+    async edit(id) {
+      this.$router.push("/user/" + id);
     },
     async save(id, password) {
       console.log(id, password);
       const res = await updateAcc(id, password);
       if (res.code === 200 && res) {
-        message.success("sửa thành công");
+        // message.success("sửa thành công");
       }
       this.isEdit = !this.isEdit;
     },
@@ -327,5 +372,10 @@ th {
 .listBtn {
   display: flex;
   justify-content: center;
+  align-items: center;
+}
+.formSignUp {
+  width: 20%;
+  margin: auto;
 }
 </style>
