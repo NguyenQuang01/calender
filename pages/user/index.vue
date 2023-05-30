@@ -238,7 +238,6 @@ export default {
     },
     async submitSignUp(event) {
       event.preventDefault();
-      console.log(this.SignUp);
 
       const url = `admin/user-manager/add`;
       try {
@@ -248,7 +247,7 @@ export default {
           this.$message.success("success");
         }
       } catch (error) {
-        console.log(error);
+        this.$message.error("Invalid Phone Number");
       }
     },
     async getAllUser() {
