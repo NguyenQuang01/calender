@@ -256,7 +256,6 @@ export default {
       try {
         const res = await PersonService.get(url);
         if (res) {
-          console.log(res);
           this.data = res.data.data;
         }
       } catch (error) {
@@ -279,10 +278,9 @@ export default {
       this.$router.push("/user/" + id);
     },
     async save(id, password) {
-      console.log(id, password);
       const res = await updateAcc(id, password);
       if (res.code === 200 && res) {
-        // message.success("sửa thành công");
+        message.success("success ");
       }
       this.isEdit = !this.isEdit;
     },
@@ -290,12 +288,12 @@ export default {
       const url = `admin/user-manager/detele/${id}`;
       try {
         const res = await PersonService.delete(url);
+
         if (res) {
-          console.log(res);
-          this.data = res.data.data;
+          this.$message.success("delete success");
         }
       } catch (error) {
-        console.log(error);
+        this.$message.error("delete error: " + error);
       }
     },
   },
