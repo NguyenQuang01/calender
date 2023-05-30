@@ -25,7 +25,7 @@
             <b-form-input
               id="input-1"
               v-model="SignUp.birthDay"
-              type="text"
+              type="date"
               placeholder="Enter "
               required
             ></b-form-input>
@@ -53,7 +53,7 @@
             <b-form-input
               id="input-1"
               v-model="SignUp.phoneNumber"
-              type="text"
+              type="number"
               placeholder="Enter "
               required
             ></b-form-input>
@@ -63,7 +63,7 @@
             <b-form-input
               id="input-1"
               v-model="SignUp.email"
-              type="text"
+              type="email"
               placeholder="Enter "
               required
             ></b-form-input>
@@ -82,13 +82,10 @@
             ></b-form-input>
           </b-form-group>
           <b-form-group id="input-group-1" label="Role :" label-for="input-1">
-            <b-form-input
-              id="input-1"
-              v-model="SignUp.role"
-              type="text"
-              placeholder="Enter "
-              required
-            ></b-form-input>
+            <a-select v-model="SignUp.role">
+              <a-select-option value="1"> User </a-select-option>
+              <a-select-option value="2"> Admin </a-select-option>
+            </a-select>
           </b-form-group>
           <b-form-group id="input-group-1" label="Sex :" label-for="input-1">
             <a-select v-model="SignUp.sex">
@@ -234,12 +231,18 @@ export default {
     this.getAllUser();
   },
   methods: {
+    formattedDate(param) {
+      const parts = param.split("-");
+      const formatted = `${parts[2]}/${parts[1]}/${parts[0]}`;
+      return formatted;
+    },
     async submitSignUp(event) {
       event.preventDefault();
       console.log(this.SignUp);
 
       const url = `admin/user-manager/add`;
       try {
+        this.SignUp.birthDay = this.formattedDate(this.SignUp.birthDay);
         const res = await PersonService.post(url, this.SignUp);
         if (res) {
           this.$message.success("success");

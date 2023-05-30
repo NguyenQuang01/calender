@@ -7,13 +7,6 @@
           <span>Personal</span>
         </nuxt-link>
       </v-toolbar-title>
-
-      <!-- <v-toolbar-title class="toolbar-title">
-        <nuxt-link to="all" class="toolbar-link">
-          <v-icon>mdi-account-group-outline</v-icon>
-          <span>All</span>
-        </nuxt-link>
-      </v-toolbar-title> -->
       <v-spacer />
       <v-toolbar-title class="toolbar-title">
         <nuxt-link to="work" class="toolbar-link">
@@ -22,7 +15,7 @@
         </nuxt-link>
       </v-toolbar-title>
       <v-spacer />
-      <v-toolbar-title class="toolbar-title">
+      <v-toolbar-title class="toolbar-title" v-if="isAdmin">
         <nuxt-link to="/user" class="toolbar-link">
           <v-icon>mdi-account-details</v-icon>
           <span>Account management</span>
@@ -49,7 +42,11 @@ export default {
   data() {
     return {
       title: "Vuetify.js",
+      isAdmin: false,
     };
+  },
+  mounted() {
+    this.isAdmin = localStorage.getItem("isAdmin") === "true" ? true : false;
   },
   methods: {
     async logout() {

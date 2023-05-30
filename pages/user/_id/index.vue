@@ -17,7 +17,7 @@
           <b-form-input
             id="input-1"
             v-model="SignUp.birthDay"
-            type="text"
+            type="date"
             placeholder="Enter "
             required
           ></b-form-input>
@@ -41,7 +41,7 @@
           <b-form-input
             id="input-1"
             v-model="SignUp.phoneNumber"
-            type="text"
+            type="number"
             placeholder="Enter "
             required
           ></b-form-input>
@@ -51,7 +51,7 @@
           <b-form-input
             id="input-1"
             v-model="SignUp.email"
-            type="text"
+            type="email"
             placeholder="Enter "
             required
           ></b-form-input>
@@ -66,13 +66,10 @@
           ></b-form-input>
         </b-form-group>
         <b-form-group id="input-group-1" label="Role :" label-for="input-1">
-          <b-form-input
-            id="input-1"
-            v-model="SignUp.role"
-            type="text"
-            placeholder="Enter "
-            required
-          ></b-form-input>
+          <a-select v-model="SignUp.role">
+            <a-select-option value="1"> User </a-select-option>
+            <a-select-option value="2"> Admin </a-select-option>
+          </a-select>
         </b-form-group>
         <b-form-group id="input-group-1" label="Sex :" label-for="input-1">
           <a-select v-model="SignUp.sex">
@@ -106,13 +103,13 @@ export default {
   data() {
     return {
       SignUp: {
-        address: "string",
-        birthDay: "1990-02-05",
-        description: "string",
-        email: "abcd@gmail.com",
-        fullName: "Nguyen Văn A",
-        password: "quang",
-        phoneNumber: "0969686868",
+        address: "",
+        birthDay: "",
+        description: "",
+        email: "",
+        fullName: "",
+        password: "",
+        phoneNumber: "",
         role: 1,
         sex: 0,
       },
@@ -137,11 +134,17 @@ export default {
         console.log(error);
       }
     },
+    formattedDate(param) {
+      const parts = param.split("-");
+      const formatted = `${parts[2]}/${parts[1]}/${parts[0]}`;
+      return formatted;
+    },
     async submitSignUp(event) {
       event.preventDefault();
 
       const id = this.$route.params.id;
       const url = `admin/user-manager/update/${id}`;
+      this.SignUp.birthDay = this.formattedDate(this.SignUp.birthDay);
       try {
         const res = await PersonService.put(url, this.SignUp);
         if (res) {

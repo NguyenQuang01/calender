@@ -58,6 +58,7 @@ export default {
       event.preventDefault();
       try {
         const res = await LoginService.postLogin("login", this.form);
+        localStorage.setItem("isAdmin", res.data.data.isAdmin);
         localStorage.setItem("token", res.data.data.token);
         this.$auth.strategy.token.set("local", "Bearer " + res.data.data.token);
         this.$axios.setHeader("Authorization", "Bearer " + res.data.data.token);
