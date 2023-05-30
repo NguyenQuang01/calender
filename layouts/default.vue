@@ -8,7 +8,7 @@
         </nuxt-link>
       </v-toolbar-title>
       <v-spacer />
-      <v-toolbar-title class="toolbar-title">
+      <v-toolbar-title class="toolbar-title" v-if="isAdmin">
         <nuxt-link to="work" class="toolbar-link">
           <v-icon>mdi-account-group-outline</v-icon>
           <span>Work List</span>

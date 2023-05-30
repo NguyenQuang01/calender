@@ -201,12 +201,12 @@ export default {
   },
   data() {
     return {
+      userName: "",
       total: "",
       isEdit: false,
       parts: [],
       parts2: [],
       form: {
-        // parentId: "",
         demarcation: "",
         id: "",
       },
@@ -250,8 +250,9 @@ export default {
         this.$message.error("Invalid Phone Number");
       }
     },
-    async getAllUser() {
-      const url = `admin/user-manager`;
+    async getAllUser(param) {
+      const payload = param || "";
+      const url = `admin/user-manager?email=${payload}`;
       try {
         const res = await PersonService.get(url);
         if (res) {
@@ -263,7 +264,7 @@ export default {
       }
     },
     searchName() {
-      this.getvalue();
+      this.getAllUser(this.userName);
     },
     confirm(id) {
       this.deletes(id);
