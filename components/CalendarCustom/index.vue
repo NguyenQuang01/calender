@@ -15,6 +15,23 @@
           <v-toolbar-title v-if="$refs.calendar">
             {{ $refs.calendar.title }}
           </v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-menu bottom right>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn outlined color="grey darken-2" v-bind="attrs" v-on="on">
+                <span>{{ typeToLabel[type] }}</span>
+                <v-icon right> mdi-menu-down </v-icon>
+              </v-btn>
+            </template>
+            <v-list>
+              <v-list-item @click="type = 'day'">
+                <v-list-item-title>Day</v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="type = 'month'">
+                <v-list-item-title>Month</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
         </v-toolbar>
       </v-sheet>
       <v-sheet class="calendar-main">
@@ -29,6 +46,8 @@
           :type="type"
           :locale-first-day-of-year="1"
           @click:event="showEvent"
+          @click:date="viewDay"
+          @click:more="viewDay"
         ></v-calendar>
         <!-- modal events -->
         <!-- <v-menu
@@ -40,9 +59,6 @@
         <a-modal :visible="selectedOpen" :footer="null" :closable="false">
           <v-card color="grey lighten-4" flat>
             <v-toolbar :color="selectedEvent?.color?.toLowerCase()" dark>
-              <v-btn icon>
-                <v-icon>mdi-pencil</v-icon>
-              </v-btn>
               <!--eslint-disable vue/no-v-text-v-html-on-component-->
               <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
               <v-spacer></v-spacer>
@@ -159,6 +175,7 @@ export default {
     type: "month",
     typeToLabel: {
       month: "Month",
+      day: "Day",
     },
     selectedEvent: {},
     selectedElement: null,
@@ -181,6 +198,7 @@ export default {
       endDate: null,
     },
     currentMonth: new Date().getMonth(),
+    form: null
   }),
   beforeMount() {
     this.getFirstDateAndLastDate();
@@ -188,15 +206,15 @@ export default {
   },
   mounted() {
     this.form.setFieldsValue({
-          description: this.selectedEvent?.description,
-          endTime: this.selectedEvent?.end?.split(" ")[1],
-          scheduleId: this.selectedEvent?.scheduleId,
-          shiftId: this.selectedEvent?.shiftId,
-          startTime: this.selectedEvent?.start?.split(" ")[1],
-          title: this.selectedEvent?.name,
-          workDate: this.selectedEvent?.start?.split(" ")[0],
-          workTypeId: this.selectedEvent?.workTypeId,
-        });
+      description: this.selectedEvent?.description,
+      endTime: this.selectedEvent?.end?.split(" ")[1],
+      scheduleId: this.selectedEvent?.scheduleId,
+      shiftId: this.selectedEvent?.shiftId,
+      startTime: this.selectedEvent?.start?.split(" ")[1],
+      title: this.selectedEvent?.name,
+      workDate: this.selectedEvent?.start?.split(" ")[0],
+      workTypeId: this.selectedEvent?.workTypeId,
+    });
   },
   fetch() {
     Promise.all([
@@ -217,12 +235,6 @@ export default {
       },
       deep: true,
     },
-    selectedEvent: {
-      handler(value) {
-        
-      },
-      deep: true,
-    },
   },
   methods: {
     async handleUpdateEvent(e) {
@@ -231,7 +243,10 @@ export default {
 
       this.form.validateFieldsAndScroll((err, values) => {
         if (!err) {
-          payload = values;
+          payload = {
+            ...values,
+            scheduleId: this.selectedEvent.scheduleId,
+          };
         }
       });
 
@@ -240,8 +255,13 @@ export default {
           "user/working-schedule/update",
           payload
         );
-
-        console.log("11111 ~ file: index.vue:247 ~ res:", res);
+        if (res.data.code === 200) {
+          alert("Update Successful!");
+          this.selectedOpen = false;
+          this.getListEvents();
+        } else {
+          alert(res.message);
+        }
       } catch (error) {
         console.log(error);
       }
@@ -306,10 +326,10 @@ export default {
       const day = new Date(date.date).getDay();
       return this.daysOfWeek[day];
     },
-    // viewDay({ date }) {
-    //   this.focus = date;
-    //   this.type = "day";
-    // },
+    viewDay({ date }) {
+      this.focus = date;
+      this.type = "day";
+    },
     getEventColor(event) {
       const color = event?.color.toLowerCase();
       return color;
@@ -328,6 +348,18 @@ export default {
     showEvent({ nativeEvent, event }) {
       const open = () => {
         this.selectedEvent = event;
+
+        this.form.setFieldsValue({
+          description: event.description,
+          endTime: event.end?.split(" ")[1],
+          scheduleId: event.scheduleId,
+          shiftId: event.shiftId,
+          startTime: event.start?.split(" ")[1],
+          title: event.name,
+          workDate: event.start?.split(" ")[0],
+          workTypeId: event.workTypeId,
+        });
+
         this.selectedElement = nativeEvent.target;
         requestAnimationFrame(() =>
           requestAnimationFrame(() => (this.selectedOpen = true))

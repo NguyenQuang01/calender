@@ -85,7 +85,7 @@
 </template>
 <script>
 import AdminService from "../../services/api/adminService";
-
+import getDaysBetween from "../../utils/getDaysBetween";
 export default {
   name: "TableCustom",
 
@@ -169,11 +169,37 @@ export default {
       userName: "",
       page: 1,
       defaultValue: new Date(),
+      dateRangeSelected: []
     };
   },
   watch: {
     datePicker: {
-      handler() {
+      handler(value) {
+        this.dateRangeSelected = getDaysBetween(value.startDate, value.endDate);
+
+
+        const cols = this.columns.map((column, index) => {
+          return {
+            ...column,
+            title:
+              column.dataIndex === "name"
+                ? column.title
+                : () => {
+                    if (index <= this.dateRangeSelected.length) {
+                      const date = this.dateRangeSelected[index - 1];
+                      return (
+                        <div>
+                          {column.title}
+                          <br />
+                          {date}
+                        </div>
+                      );
+                    }
+                  },
+          };
+        });
+
+        console.log('11111 ~ file: index.vue:202 ~ cols:', cols)
         this.getUserSchedule();
       },
       deep: true,
@@ -246,7 +272,7 @@ export default {
     },
 
     async getUserSchedule() {
-      let url = `?endDate=${this.datePicker.endDate}&startDate=${this.datePicker.startDate}`;
+      let url = `working-schedule?endDate=${this.datePicker.endDate}&startDate=${this.datePicker.startDate}`;
       if (this.searchValue) {
         url += `&employeeName=${this.searchValue}`;
       }

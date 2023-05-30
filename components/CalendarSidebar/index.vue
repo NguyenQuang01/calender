@@ -17,7 +17,7 @@
           <span class="workday-color evening"></span>
         </div>
         <div class="status">
-          <span class="workday-name">Cả Ngày</span>
+          <span class="workday-name">Full Day</span>
           <span class="workday-color allday"></span>
         </div>
       </div>
@@ -25,7 +25,7 @@
 
     <div class="search">
       <a-input-search
-        placeholder="Search"
+        placeholder="Enter Employee Name..."
         enter-button="Search"
         @search="onSearch"
       />
