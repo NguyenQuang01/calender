@@ -198,23 +198,11 @@ export default {
       endDate: null,
     },
     currentMonth: new Date().getMonth(),
-    form: null
+    form: {},
   }),
   beforeMount() {
     this.getFirstDateAndLastDate();
     this.form = this.$form.createForm(this, { name: "register" });
-  },
-  mounted() {
-    this.form.setFieldsValue({
-      description: this.selectedEvent?.description,
-      endTime: this.selectedEvent?.end?.split(" ")[1],
-      scheduleId: this.selectedEvent?.scheduleId,
-      shiftId: this.selectedEvent?.shiftId,
-      startTime: this.selectedEvent?.start?.split(" ")[1],
-      title: this.selectedEvent?.name,
-      workDate: this.selectedEvent?.start?.split(" ")[0],
-      workTypeId: this.selectedEvent?.workTypeId,
-    });
   },
   fetch() {
     Promise.all([
@@ -260,10 +248,10 @@ export default {
           this.selectedOpen = false;
           this.getListEvents();
         } else {
-          alert(res.message);
+          alert(message);
         }
       } catch (error) {
-        console.log(error);
+        alert(error.message);
       }
     },
     getFirstDateAndLastDate() {
@@ -346,19 +334,29 @@ export default {
       this.currentMonth++;
     },
     showEvent({ nativeEvent, event }) {
-      const open = () => {
-        this.selectedEvent = event;
+      this.selectedEvent = event;
+      const open = async () => {
+        try {
+          const res = await PersonService.get(
+            `/user/working-schedule/detail?scheduleId=${event.scheduleId}`
+          );
 
-        this.form.setFieldsValue({
-          description: event.description,
-          endTime: event.end?.split(" ")[1],
-          scheduleId: event.scheduleId,
-          shiftId: event.shiftId,
-          startTime: event.start?.split(" ")[1],
-          title: event.name,
-          workDate: event.start?.split(" ")[0],
-          workTypeId: event.workTypeId,
-        });
+          if (res.status === 200) {
+            const data = res.data.data;
+            this.form.setFieldsValue({
+              description: data.description,
+              endTime: data.endTime,
+              scheduleId: data.scheduleId,
+              shiftId: data.shiftId,
+              startTime: data.startTime,
+              title: data.title,
+              workDate: data.workDate,
+              workTypeId: data.workTypeId,
+            });
+          }
+        } catch (error) {
+          console.log(error);
+        }
 
         this.selectedElement = nativeEvent.target;
         requestAnimationFrame(() =>
