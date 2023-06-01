@@ -7,8 +7,7 @@
         <span>{{ this.datePicker.endDate }}</span>
       </div>
       <v-spacer></v-spacer>
-      <v-btn class="ma-2" color="success">Duyệt Cho Tất Cả</v-btn>
-      <a-week-picker :locale="locale" :allowClear="true" @change="onChange" />
+      <a-week-picker class="ma-2" :locale="locale" :allowClear="true" @change="onChange" />
     </div>
     <!-- -------------------table----------------------- -->
     <a-table
