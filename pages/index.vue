@@ -126,6 +126,7 @@
 <script>
 import CalendarCustom from "~/components/CalendarCustom";
 import PersonService from "../services/api/personService";
+import today from "@/utils/getDaysBetween.js";
 export default {
   components: {
     CalendarCustom,
@@ -169,17 +170,21 @@ export default {
         }
       });
       try {
-        const res = await PersonService.post(
-          "user/working-schedule/add",
-          this.dataCreate
-        );
-        if (res.data.message === "Successfully") {
-          this.form.resetFields();
-          alert(`Add ${res.data.message}`);
-          this.visible = false;
-          this.$router.go(0);
+        if (this.dataCreate.workDate >= today()) {
+          const res = await PersonService.post(
+            "user/working-schedule/add",
+            this.dataCreate
+          );
+          if (res.data.message === "Successfully") {
+            this.form.resetFields();
+            alert(`Add ${res.data.message}`);
+            this.visible = false;
+            this.$router.go(0);
+          } else {
+            alert(res.data.message);
+          }
         } else {
-          alert(res.data.message);
+          alert("Not scheduled in the past");
         }
       } catch (error) {
         console.log(error);
@@ -189,21 +194,21 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
- .morning {
-    background-color: #673ab7;
-  }
+.morning {
+  background-color: #673ab7;
+}
 
-  .afternoon {
-    background-color: #ff9800;
-  }
+.afternoon {
+  background-color: #ff9800;
+}
 
-  .evening {
-    background-color: rgb(11, 145, 255);
-  }
+.evening {
+  background-color: rgb(11, 145, 255);
+}
 
-  .allday {
-    background-color: greenyellow;
-  }
+.allday {
+  background-color: greenyellow;
+}
 .workday {
   .workday-title {
     font-size: 24px;
