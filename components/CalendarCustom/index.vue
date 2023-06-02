@@ -308,7 +308,6 @@ export default {
     },
 
     onChange(date, dateString) {
-      console.log(1111111, date, dateString);
     },
     getDay(date) {
       const day = new Date(date.date).getDay();

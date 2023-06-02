@@ -7,7 +7,12 @@
         <span>{{ this.datePicker.endDate }}</span>
       </div>
       <v-spacer></v-spacer>
-      <a-week-picker class="ma-2" :locale="locale" :allowClear="true" @change="onChange" />
+      <a-week-picker
+        class="ma-2"
+        :locale="locale"
+        :allowClear="true"
+        @change="onChange"
+      />
     </div>
     <!-- -------------------table----------------------- -->
     <a-table
@@ -19,6 +24,7 @@
       <div class="tag-box" slot="monday" slot-scope="monday">
         <a-tag
           v-for="tag in monday"
+          @click="handleClickTag(tag)"
           :key="tag.id"
           :color="colorTag(tag.shiftName)"
         >
@@ -28,6 +34,7 @@
       <div class="tag-box" slot="tuesday" slot-scope="tuesday">
         <a-tag
           v-for="tag in tuesday"
+          @click="handleClickTag(tag)"
           :key="tag.id"
           :color="colorTag(tag.shiftName)"
         >
@@ -37,6 +44,7 @@
       <div class="tag-box" slot="wednesday" slot-scope="wednesday">
         <a-tag
           v-for="tag in wednesday"
+          @click="handleClickTag(tag)"
           :key="tag.id"
           :color="colorTag(tag.shiftName)"
         >
@@ -46,6 +54,7 @@
       <div class="tag-box" slot="thursday" slot-scope="thursday">
         <a-tag
           v-for="tag in thursday"
+          @click="handleClickTag(tag)"
           :key="tag.id"
           :color="colorTag(tag.shiftName)"
         >
@@ -55,6 +64,7 @@
       <div class="tag-box" slot="friday" slot-scope="friday">
         <a-tag
           v-for="tag in friday"
+          @click="handleClickTag(tag)"
           :key="tag.id"
           :color="colorTag(tag.shiftName)"
         >
@@ -64,6 +74,7 @@
       <div class="tag-box" slot="saturday" slot-scope="saturday">
         <a-tag
           v-for="tag in saturday"
+          @click="handleClickTag(tag)"
           :key="tag.id"
           :color="colorTag(tag.shiftName)"
         >
@@ -73,6 +84,7 @@
       <div class="tag-box" slot="sunday" slot-scope="sunday">
         <a-tag
           v-for="tag in sunday"
+          @click="handleClickTag(tag)"
           :key="tag.id"
           :color="colorTag(tag.shiftName)"
         >
@@ -80,10 +92,114 @@
         </a-tag>
       </div>
     </a-table>
+
+    <!-- modal -->
+    <a-modal :visible="selectedOpen" :footer="null" :closable="false">
+      <v-card color="grey lighten-4" flat>
+        <v-toolbar dark>
+          <!--eslint-disable vue/no-v-text-v-html-on-component-->
+          <!-- <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title> -->
+          <v-spacer></v-spacer>
+          <v-btn icon @click="handleDeleteEvent">
+            <v-icon>mdi-delete</v-icon>
+          </v-btn>
+        </v-toolbar>
+        <v-card-text>
+          <!-- <span v-html="selectedEvent.details"></span> -->
+          <div class="form-events">
+            <a-form :form="form" @submit="handleUpdateEvent">
+              <a-form-item label="Title">
+                <a-input
+                  v-decorator="[
+                    'title',
+                    {
+                      rules: [
+                        {
+                          required: true,
+                          message: 'Please input your Title!',
+                        },
+                      ],
+                    },
+                  ]"
+                />
+              </a-form-item>
+              <a-form-item label="Description">
+                <a-textarea v-decorator="['description']" />
+              </a-form-item>
+
+              <div style="display: flex; gap: 4px">
+                <a-form-item label="Work Date">
+                  <a-input v-decorator="['workDate']" />
+                </a-form-item>
+                <a-form-item label="Start Time">
+                  <a-input v-decorator="['startTime']" format="HH:mm" />
+                </a-form-item>
+                <a-form-item label="End Time">
+                  <a-input v-decorator="['endTime']" format="HH:mm" />
+                </a-form-item>
+              </div>
+              <div style="display: flex; gap: 4px">
+                <a-form-item label="Shift" style="width: 100%">
+                  <a-select
+                    v-decorator="[
+                      'shiftId',
+                      {
+                        rules: [
+                          {
+                            required: true,
+                            message: 'Please select shift!',
+                          },
+                        ],
+                      },
+                    ]"
+                  >
+                    <a-select-option
+                      v-for="option in workType"
+                      :key="option.id"
+                      :value="option.id"
+                      >{{ option.name }}</a-select-option
+                    >
+                  </a-select>
+                </a-form-item>
+                <a-form-item label="Work Type" style="width: 100%">
+                  <a-select
+                    v-decorator="[
+                      'workTypeId',
+                      {
+                        rules: [
+                          {
+                            required: true,
+                            message: 'Please select work type!',
+                          },
+                        ],
+                      },
+                    ]"
+                  >
+                    <a-select-option
+                      v-for="option in shiftOptions"
+                      :key="option.id"
+                      :value="option.id"
+                      >{{ option.name }}</a-select-option
+                    >
+                  </a-select>
+                </a-form-item>
+              </div>
+              <a-form-item>
+                <a-button type="primary" html-type="submit"> Save </a-button>
+                <v-btn text color="secondary" @click="selectedOpen = false">
+                  Cancel
+                </v-btn>
+              </a-form-item>
+            </a-form>
+          </div>
+        </v-card-text>
+      </v-card>
+    </a-modal>
   </div>
 </template>
 <script>
 import AdminService from "../../services/api/adminService";
+import PersonService from "../../services/api/personService";
 import getDaysBetween from "../../utils/getDaysBetween";
 export default {
   name: "TableCustom",
@@ -168,14 +284,21 @@ export default {
       userName: "",
       page: 1,
       defaultValue: new Date(),
-      dateRangeSelected: []
+      form: {},
+      dateRangeSelected: [],
+      selectedOpen: false,
+      shiftOptions: [],
+      workType: [],
+      selectedEventId: null,
     };
+  },
+  beforeMount() {
+    this.form = this.$form.createForm(this, { name: "register" });
   },
   watch: {
     datePicker: {
       handler(value) {
         this.dateRangeSelected = getDaysBetween(value.startDate, value.endDate);
-
 
         const cols = this.columns.map((column, index) => {
           return {
@@ -197,8 +320,6 @@ export default {
                   },
           };
         });
-
-        console.log('11111 ~ file: index.vue:202 ~ cols:', cols)
         this.getUserSchedule();
       },
       deep: true,
@@ -213,9 +334,92 @@ export default {
     this.defaultValue = this.getCurrentWeek();
   },
   fetch() {
-    Promise.all[this.getUserSchedule()];
+    Promise.all[
+      (this.getUserSchedule(), this.getListShifts(), this.getWorkTypes())
+    ];
   },
   methods: {
+    async getListShifts() {
+      try {
+        const res = await PersonService.get("user/working-schedule/get-shifts");
+        this.shiftOptions = res.data.data;
+        localStorage.setItem("shiftOptions", JSON.stringify(this.shiftOptions));
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async getWorkTypes() {
+      try {
+        const res = await PersonService.get(
+          "user/working-schedule/get-worktypes"
+        );
+        this.workType = res.data.data;
+        localStorage.setItem("workType", JSON.stringify(this.workType));
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async handleClickTag(tag) {
+      this.selectedOpen = true;
+      this.selectedEventId = tag.id;
+      try {
+        const res = await PersonService.get(
+          `/user/working-schedule/detail?scheduleId=${tag.id}`
+        );
+        if (res.status === 200) {
+          const data = res.data.data;
+          this.form.setFieldsValue({
+            description: data.description,
+            endTime: data.endTime,
+            scheduleId: data.scheduleId,
+            shiftId: data.shiftId,
+            startTime: data.startTime,
+            title: data.title,
+            workDate: data.workDate,
+            workTypeId: data.workTypeId,
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async handleDeleteEvent() {
+      const res = await PersonService.delete(
+        `user/working-schedule/delete?scheduleId=${this.selectedEventId}`
+      );
+      if (res.data.code === 200) {
+        alert("Delete was successfully!");
+        this.selectedOpen = false;
+        this.getUserSchedule();
+      } else {
+        alert(`Error ${res.data.message}`);
+      }
+    },
+    async handleUpdateEvent(e) {
+      e.preventDefault();
+      let payload = {};
+
+      this.form.validateFieldsAndScroll((err, values) => {
+        payload = {
+          ...values,
+          scheduleId: this.selectedEventId,
+        };
+      });
+
+      try {
+        const res = await PersonService.put(
+          "user/working-schedule/update",
+          payload
+        );
+        if (res.data.code === 200) {
+          alert("Update Successful!");
+          this.selectedOpen = false;
+          this.getUserSchedule();
+        }
+      } catch (error) {
+        alert('Can not update the schedule in the past!');
+      }
+    },
     getCurrentWeek() {
       const currentDate = new Date();
       const currentYear = currentDate.getFullYear();
@@ -257,18 +461,6 @@ export default {
         this.datePicker.endDate = endOfWeek;
       }
     },
-    onCellChange(key, dataIndex, value) {
-      const dataSource = [...this.dataSource];
-      const target = dataSource.find((item) => item.key === key);
-      if (target) {
-        target[dataIndex] = value;
-        this.dataSource = dataSource;
-      }
-    },
-    onDelete(key) {
-      const dataSource = [...this.dataSource];
-      this.dataSource = dataSource.filter((item) => item.key !== key);
-    },
 
     async getUserSchedule() {
       let url = `working-schedule?endDate=${this.datePicker.endDate}&startDate=${this.datePicker.startDate}`;
@@ -278,6 +470,7 @@ export default {
       try {
         const res = await AdminService.getUserSchedule(url);
         this.dataSource = res.data.data.content;
+
       } catch (error) {
         console.error(error);
       }
