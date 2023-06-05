@@ -139,10 +139,10 @@
                 </a-form-item>
               </div>
               <div style="display: flex; gap: 4px">
-                <a-form-item label="Shift" style="width: 100%">
+                <a-form-item label="Work Type" style="width: 100%">
                   <a-select
                     v-decorator="[
-                      'shiftId',
+                      'workTypeId',
                       {
                         rules: [
                           {
@@ -161,10 +161,10 @@
                     >
                   </a-select>
                 </a-form-item>
-                <a-form-item label="Work Type" style="width: 100%">
+                <a-form-item label=" Shift" style="width: 100%">
                   <a-select
                     v-decorator="[
-                      'workTypeId',
+                      'shiftId',
                       {
                         rules: [
                           {
@@ -434,9 +434,8 @@ export default {
       );
     },
     colorTag(tagName) {
-      console.log(1111111111111, tagName);
       if (tagName === "Work At Company") {
-        return "red";
+        return "Red";
       }
       if (tagName === "Go On Bussiness") {
         return "Blue";
