@@ -4,10 +4,10 @@
       <div>
         <div>
           <div class="workday">
-            <span class="workday-title">Works Shift</span>
+            <span class="workday-title">Works </span>
             <div class="workday-box">
               <div class="status">
-                <span class="workday-name">Go On Bussiness</span>
+                <span class="workday-name"> Work At Company</span>
                 <span class="workday-color morning"></span>
               </div>
               <div class="status">
@@ -15,11 +15,11 @@
                 <span class="workday-color afternoon"></span>
               </div>
               <div class="status">
-                <span class="workday-name">Leave</span>
+                <span class="workday-name">Go On Bussiness</span>
                 <span class="workday-color evening"></span>
               </div>
               <div class="status">
-                <span class="workday-name">Full Day</span>
+                <span class="workday-name">Leave</span>
                 <span class="workday-color allday"></span>
               </div>
             </div>
@@ -195,19 +195,19 @@ export default {
 </script>
 <style lang="scss" scoped>
 .morning {
-  background-color: #673ab7;
+  background-color: Red;
 }
 
 .afternoon {
-  background-color: #ff9800;
+  background-color: Green;
 }
 
 .evening {
-  background-color: rgb(11, 145, 255);
+  background-color: Blue;
 }
 
 .allday {
-  background-color: greenyellow;
+  background-color: Purple;
 }
 .workday {
   .workday-title {
