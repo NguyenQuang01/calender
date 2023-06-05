@@ -26,7 +26,7 @@
           v-for="tag in monday"
           @click="handleClickTag(tag)"
           :key="tag.id"
-          :color="colorTag(tag.shiftName)"
+          :color="colorTag(tag.workTypeName)"
         >
           {{ `${tag.startTime} - ${tag.endTime}` }}
         </a-tag>
@@ -36,7 +36,7 @@
           v-for="tag in tuesday"
           @click="handleClickTag(tag)"
           :key="tag.id"
-          :color="colorTag(tag.shiftName)"
+          :color="colorTag(tag.workTypeName)"
         >
           {{ `${tag.startTime} - ${tag.endTime}` }}
         </a-tag>
@@ -46,7 +46,7 @@
           v-for="tag in wednesday"
           @click="handleClickTag(tag)"
           :key="tag.id"
-          :color="colorTag(tag.shiftName)"
+          :color="colorTag(tag.workTypeName)"
         >
           {{ `${tag.startTime} - ${tag.endTime}` }}
         </a-tag>
@@ -56,7 +56,7 @@
           v-for="tag in thursday"
           @click="handleClickTag(tag)"
           :key="tag.id"
-          :color="colorTag(tag.shiftName)"
+          :color="colorTag(tag.workTypeName)"
         >
           {{ `${tag.startTime} - ${tag.endTime}` }}
         </a-tag>
@@ -66,7 +66,7 @@
           v-for="tag in friday"
           @click="handleClickTag(tag)"
           :key="tag.id"
-          :color="colorTag(tag.shiftName)"
+          :color="colorTag(tag.workTypeName)"
         >
           {{ `${tag.startTime} - ${tag.endTime}` }}
         </a-tag>
@@ -76,7 +76,7 @@
           v-for="tag in saturday"
           @click="handleClickTag(tag)"
           :key="tag.id"
-          :color="colorTag(tag.shiftName)"
+          :color="colorTag(tag.workTypeName)"
         >
           {{ `${tag.startTime} - ${tag.endTime}` }}
         </a-tag>
@@ -86,7 +86,7 @@
           v-for="tag in sunday"
           @click="handleClickTag(tag)"
           :key="tag.id"
-          :color="colorTag(tag.shiftName)"
+          :color="colorTag(tag.workTypeName)"
         >
           {{ `${tag.startTime} - ${tag.endTime}` }}
         </a-tag>
@@ -417,7 +417,7 @@ export default {
           this.getUserSchedule();
         }
       } catch (error) {
-        alert('Can not update the schedule in the past!');
+        alert("Can not update the schedule in the past!");
       }
     },
     getCurrentWeek() {
@@ -434,17 +434,18 @@ export default {
       );
     },
     colorTag(tagName) {
+      console.log(1111111111111, tagName);
       if (tagName === "Work At Company") {
-        return "#673ab7";
+        return "red";
       }
       if (tagName === "Go On Bussiness") {
-        return "#ff9800";
+        return "Blue";
       }
       if (tagName === "Work at Home") {
-        return "#0b91ff";
+        return "Green";
       }
       if (tagName === "Leave") {
-        return "greenyellow";
+        return "Purple";
       }
     },
     onChange(date, dateString) {
@@ -470,7 +471,6 @@ export default {
       try {
         const res = await AdminService.getUserSchedule(url);
         this.dataSource = res.data.data.content;
-
       } catch (error) {
         console.error(error);
       }
